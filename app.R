@@ -13,40 +13,45 @@ source("util.R")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-   
-   # Application title
-   titlePanel("COVID-19 Spain"),
-   
-   # Sidebar with a slider input for number of bins 
-   sidebarLayout(
-      sidebarPanel(
-        h2("Instructions"),
-        p("Blablabla"),
-        checkboxGroupInput("checkGroup", 
-                           h3("Checkbox group"), 
-                           choices = list("Total cases (linear)" = 1,
-                                          "Total cases (log)" = 2, 
-                                          "New cases (absolute)" = 3, 
-                                          "New cases (%)" = 4),
-                           selected = 1),
-       
-      sliderInput("dates",
-                  h3("Date range"),
-                  min = as.Date("2020-02-25","%Y-%m-%d"),
-                  max = as.Date("2020-04-12","%Y-%m-%d"),
-                  value=c(as.Date("2020-02-25"),as.Date("2020-04-12")),
-                  timeFormat="%Y-%m-%d")
-   ),
-      
-      # Show a plot of the generated distribution
-      mainPanel(
-        plotlyOutput("plot_total_linear"),
-        plotlyOutput("plot_total_log"),
-        plotlyOutput("plot_new_cases_abs"),
-        plotlyOutput("plot_new_cases_perc")
-        
-      )
-   )
+  
+  navbarPage("COVID-19 Spain",
+             tabPanel("Sick",
+                      sidebarLayout(
+                        sidebarPanel(
+                          h2("Instructions"),
+                          p("Blablabla"),
+                          checkboxGroupInput("checkGroup", 
+                                             h3("Checkbox group"), 
+                                             choices = list("Total cases (linear)" = 1,
+                                                            "Total cases (log)" = 2, 
+                                                            "New cases (absolute)" = 3, 
+                                                            "New cases (%)" = 4),
+                                             selected = 1),
+                          
+                          sliderInput("dates",
+                                      h3("Date range"),
+                                      min = as.Date("2020-02-25","%Y-%m-%d"),
+                                      max = as.Date("2020-04-12","%Y-%m-%d"),
+                                      value=c(as.Date("2020-02-25"),as.Date("2020-04-12")),
+                                      timeFormat="%Y-%m-%d")
+                        ),
+                        
+                        # Show a plot of the generated distribution
+                        mainPanel(
+                          plotlyOutput("plot_total_linear"),
+                          plotlyOutput("plot_total_log"),
+                          plotlyOutput("plot_new_cases_abs"),
+                          plotlyOutput("plot_new_cases_perc")
+                          
+                        )
+                      )
+                      
+                      ),
+             tabPanel("Dead",
+                      h2("I am an empty panel!")),
+             tabPanel("Regions",
+                      h2("I am an empty panel!"))
+  )
 )
 
 
