@@ -51,15 +51,7 @@ get_daily_increment_percentage <- function(cases) {
   return(daily_increment)
 }
 
-
-#Contagiados:
-daily_increment_absolute <- get_daily_increment_absolute(data$casos)
-data["infectados_incremento_absoluto"] <- daily_increment_absolute
-daily_increment_percentage <-
-  get_daily_increment_percentage(data$infectados_incremento_absoluto)
-data["infectados_incremento_porcentual"] <-
-  daily_increment_percentage
-
+#
 plot_number_cases <-
   ggplot(data = data, aes(x = fecha, y = casos, group = 1)) +
   geom_line(color = "red") +

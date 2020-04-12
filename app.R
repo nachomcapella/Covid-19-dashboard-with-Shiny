@@ -9,6 +9,8 @@
 
 library(shiny)
 library("plotly")
+library('rsconnect')
+
 source("util.R")
 
 # Define UI for application that draws a histogram
@@ -61,7 +63,7 @@ server <- function(input, output) {
   library("ggpubr")
   
   #Reading the data:
-  data <- read.csv(file = "./datasets/COVID 19/nacional_covid19.csv")
+  data <- read.csv(file = "./data/COVID 19/nacional_covid19.csv")
   colnames(data)[1] <- "fecha"
   data$fecha<-as.Date(data$fecha)
   data$fallecimientos[is.na(data$fallecimientos)] <- 0
