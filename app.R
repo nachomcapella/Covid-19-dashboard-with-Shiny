@@ -34,8 +34,8 @@ ui <- fluidPage(navbarPage(
                  "dates_sick",
                  h3("Choose a date range"),
                  min = as.Date("2020-02-25", "%Y-%m-%d"),
-                 max = as.Date("2020-04-12", "%Y-%m-%d"),
-                 value = c(as.Date("2020-02-25"), as.Date("2020-04-12")),
+                 max = as.Date("2020-04-13", "%Y-%m-%d"),
+                 value = c(as.Date("2020-02-25"), as.Date("2020-04-13")),
                  timeFormat = "%Y-%m-%d"
                )
              ),
@@ -61,8 +61,8 @@ ui <- fluidPage(navbarPage(
                  "dates_dead",
                  h3("Choose a date range"),
                  min = as.Date("2020-02-25", "%Y-%m-%d"),
-                 max = as.Date("2020-04-12", "%Y-%m-%d"),
-                 value = c(as.Date("2020-02-25"), as.Date("2020-04-12")),
+                 max = as.Date("2020-04-13", "%Y-%m-%d"),
+                 value = c(as.Date("2020-02-25"), as.Date("2020-04-13")),
                  timeFormat = "%Y-%m-%d"
                )
              ),
@@ -72,7 +72,31 @@ ui <- fluidPage(navbarPage(
                plotlyOutput("plot_dead")
              ))),
   tabPanel("Regions",
-           h2("I am an empty panel!"))
+           sidebarLayout(
+             sidebarPanel(
+               h3("Choose a visualization"),
+               checkboxInput(
+                 "check_reg_1","Total cases (linear)", value= T),
+               checkboxInput(
+                 "check_reg_2","Total cases (log)", value= F),
+               checkboxInput(
+                 "check_reg_3","New cases (absolute)", value= F),
+               checkboxInput(
+                 "check_reg_4","New cases (%)", value= F),
+               sliderInput(
+                 "dates_reg",
+                 h3("Choose a date range"),
+                 min = as.Date("2020-02-25", "%Y-%m-%d"),
+                 max = as.Date("2020-04-13", "%Y-%m-%d"),
+                 value = c(as.Date("2020-02-25"), as.Date("2020-04-13")),
+                 timeFormat = "%Y-%m-%d"
+               )
+             ),
+             
+             # Show a plot of the generated distribution
+             mainPanel(
+               plotlyOutput("plot_reg")
+             )))
 ))
 
 
@@ -87,6 +111,16 @@ server <- function(input, output) {
   colnames(data)[1] <- "fecha"
   data$fecha <- as.Date(data$fecha)
   data$fallecimientos[is.na(data$fallecimientos)] <- 0
+  
+  data_2 <- read.csv(file = "./data/ccaa_covid19_casos.csv", header = T)
+  data_2<-data_2[1:18,3:49]
+  data_2<-t(data_2)
+  names <- c("Andalucia", "Asturias","Baleares","Canarias","Cantabria","CastillaLaMancha","CastillaYLeon","Cataluna","Ceuta","CValenciana","Extremadura","Galicia","Madrid","Melilla","Murcia","Navarra","PaisVasco","LaRioja")
+  colnames(data_2)<-names
+  data_2<-as.data.frame(rbind(rep(0,18), rep(0,18), data_2))
+  fecha<-data$fecha
+  data_2<-as.data.frame(cbind(fecha,data_2))
+  
   print("Data modified!")
   
   #Creating the plots:
@@ -246,7 +280,6 @@ server <- function(input, output) {
     return(subplot(ptlist, nrows=length(ptlist),shareX = T, shareY = F))
     })
   
-  
   ######################################################################
   # Dead
   ######################################################################
@@ -318,6 +351,15 @@ server <- function(input, output) {
   })
   
 }
+
+######################################################################
+# CC.AA.
+######################################################################
+data_2 <- read.csv(file = "./data/ccaa_covid19_casos.csv")
+data_2<-t(data_2)
+# casos_aragon <- t(data_2[2,3:length(data_2)]) #Transpose desired data.
+# data["infectados_aragon"] <- c(0,0,casos_aragon)
+
 
 # Run the application
 shinyApp(ui = ui, server = server)
