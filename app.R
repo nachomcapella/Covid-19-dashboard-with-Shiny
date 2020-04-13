@@ -28,8 +28,6 @@ ui <- fluidPage(navbarPage(
                  "check3","New cases (absolute)", value= F),
                checkboxInput(
                  "check4","New cases (%)", value= F),
-                
-               
                sliderInput(
                  "dates",
                  h3("Choose a date range"),
@@ -42,7 +40,7 @@ ui <- fluidPage(navbarPage(
              
              # Show a plot of the generated distribution
              mainPanel(
-               plotlyOutput("plot_total_linear"),
+               plotlyOutput("plot_sick"),
                # plotlyOutput("plot_total_log"),
                # plotlyOutput("plot_new_cases_abs"),
                # plotlyOutput("plot_new_cases_perc")
@@ -70,34 +68,34 @@ server <- function(input, output) {
   
   
   #Contagiados:
-  plot_total_linear_func <- function() {
+  plot_total_linear_func <- function(dataset, title, xlab, ylab) {
     date_range <- c(input$dates[1], input$dates[2])
     dates <-
-      data$fecha[data$fecha >= input$dates[1] &
-                   data$fecha <= input$dates[2]]
+      dataset$dates[dataset$dates >= input$dates[1] &
+                   dataset$dates <= input$dates[2]]
     cases <-
-      data$casos[data$fecha >= input$dates[1] &
-                   data$fecha <= input$dates[2]]
+      dataset$values[dataset$dates >= input$dates[1] &
+                   dataset$dates <= input$dates[2]]
     date <- as.character.Date(dates)
     df <- data.frame(cases, date)
     plot_total <-
       ggplot(data = df, aes(x = date, y = cases, group = 1)) + geom_line(color = "red") +
       geom_point() +
-      ggtitle("Total cases vs date") +
-      ylab("Cases (linear)") +
-      xlab("Date") +
+      ggtitle(title) +
+      ylab(ylab) +
+      xlab(xlab) +
       theme(axis.text.x = element_text(angle = 90, hjust = 1))
     return(plot_total)
   }
   
-  plot_total_log_func <- function() {
+  plot_total_log_func <- function(dataset, title, xlab, ylab) {
     date_range <- c(input$dates[1], input$dates[2])
     dates <-
-      data$fecha[data$fecha >= input$dates[1] &
-                   data$fecha <= input$dates[2]]
+      dataset$dates[dataset$dates >= input$dates[1] &
+                      dataset$dates <= input$dates[2]]
     cases <-
-      data$casos[data$fecha >= input$dates[1] &
-                   data$fecha <= input$dates[2]]
+      dataset$values[dataset$dates >= input$dates[1] &
+                       dataset$dates <= input$dates[2]]
     date <- as.character.Date(dates)
     df <- data.frame(cases, date)
     plot_total <-
@@ -112,14 +110,14 @@ server <- function(input, output) {
     return(plot_total)
   }
   
-  plot_new_cases_abs_func <- function() {
+  plot_new_cases_abs_func <- function(dataset, title, xlab, ylab) {
     date_range <- c(input$dates[1], input$dates[2])
     dates <-
-      data$fecha[data$fecha >= input$dates[1] &
-                   data$fecha <= input$dates[2]]
+      dataset$dates[dataset$dates >= input$dates[1] &
+                      dataset$dates <= input$dates[2]]
     cases <-
-      data$casos[data$fecha >= input$dates[1] &
-                   data$fecha <= input$dates[2]]
+      dataset$values[dataset$dates >= input$dates[1] &
+                       dataset$dates <= input$dates[2]]
     cases <- get_daily_increment_absolute(cases)
     date <- as.character.Date(dates)
     df <- data.frame(cases, date)
@@ -135,14 +133,14 @@ server <- function(input, output) {
     return(plot_new_cases_abs)
   }
   
-  plot_new_cases_perc_func <- function() {
+  plot_new_cases_perc_func <- function(dataset, title, xlab, ylab) {
     date_range <- c(input$dates[1], input$dates[2])
     dates <-
-      data$fecha[data$fecha >= input$dates[1] &
-                   data$fecha <= input$dates[2]]
+      dataset$dates[dataset$dates >= input$dates[1] &
+                      dataset$dates <= input$dates[2]]
     cases <-
-      data$casos[data$fecha >= input$dates[1] &
-                   data$fecha <= input$dates[2]]
+      dataset$values[dataset$dates >= input$dates[1] &
+                       dataset$dates <= input$dates[2]]
     cases <- get_daily_increment_percentage(cases)
     date <- as.character.Date(dates)
     df <- data.frame(cases, date)
@@ -199,22 +197,46 @@ server <- function(input, output) {
   
   pt1 <- reactive({
     if (!input$check1) return(NULL)
-    ggplotly(plot_total_linear_func())
+    dataset<-data.frame(data$casos,data$fecha)
+    colnames(dataset)[1] <- "values"
+    colnames(dataset)[2] <- "dates"
+    title<-"Total cases vs date"
+    ylab<-"Cases (linear)"
+    xlab<-"Date"
+    ggplotly(plot_total_linear_func(dataset,title,ylab,xlab))
       })
   pt2 <- reactive({
     if (!input$check2) return(NULL)
-    ggplotly(plot_total_log_func())
+    dataset<-data.frame(data$casos,data$fecha)
+    colnames(dataset)[1] <- "values"
+    colnames(dataset)[2] <- "dates"
+    title<-"Total cases vs date"
+    ylab<-"Cases (log)"
+    xlab<-"Date"
+    ggplotly(plot_total_log_func(dataset,title,ylab,xlab))
     })
   pt3 <- reactive({
     if (!input$check3) return(NULL)
-    ggplotly(plot_new_cases_abs_func())
+    dataset<-data.frame(data$casos,data$fecha)
+    colnames(dataset)[1] <- "values"
+    colnames(dataset)[2] <- "dates"
+    title<-"New cases vs date"
+    ylab<-"New cases (absolute)"
+    xlab<-"Date"
+    ggplotly(plot_new_cases_abs_func(dataset,title,ylab,xlab))
   })
   pt4 <- reactive({
     if (!input$check4) return(NULL)
-    ggplotly(plot_new_cases_perc_func())
+    dataset<-data.frame(data$casos,data$fecha)
+    colnames(dataset)[1] <- "values"
+    colnames(dataset)[2] <- "dates"
+    title<-"New cases vs date"
+    ylab<-"New cases (+%)"
+    xlab<-"Date"
+    ggplotly(plot_new_cases_perc_func(dataset,title,ylab,xlab))
     })
   
-  output$plot_total_linear = renderPlotly({
+  output$plot_sick = renderPlotly({
     ptlist <- list(pt1(),pt2(),pt3(),pt4())
     if (length(ptlist)==1){
       wtlist=c(100)
@@ -233,8 +255,6 @@ server <- function(input, output) {
     ptlist <- ptlist[to_delete] 
     wtlist <- wtlist[to_delete]
     if (length(ptlist)==0) return(NULL)
-
-    #ggplotly(grid.arrange(grobs=ptlist,heights=wtlist,nrow=length(ptlist)))
     return(subplot(ptlist, nrows=length(ptlist),shareX = T, shareY = F))
     })
   
