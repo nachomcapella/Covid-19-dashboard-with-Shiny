@@ -34,8 +34,8 @@ ui <- fluidPage(navbarPage(
                  "dates_sick",
                  h3("Choose a date range"),
                  min = as.Date("2020-02-25", "%Y-%m-%d"),
-                 max = as.Date("2020-04-13", "%Y-%m-%d"),
-                 value = c(as.Date("2020-02-25"), as.Date("2020-04-13")),
+                 max = as.Date("2020-04-14", "%Y-%m-%d"),
+                 value = c(as.Date("2020-02-25"), as.Date("2020-04-14")),
                  timeFormat = "%Y-%m-%d"
                )
              ),
@@ -61,8 +61,8 @@ ui <- fluidPage(navbarPage(
                  "dates_dead",
                  h3("Choose a date range"),
                  min = as.Date("2020-02-25", "%Y-%m-%d"),
-                 max = as.Date("2020-04-13", "%Y-%m-%d"),
-                 value = c(as.Date("2020-02-25"), as.Date("2020-04-13")),
+                 max = as.Date("2020-04-14", "%Y-%m-%d"),
+                 value = c(as.Date("2020-02-25"), as.Date("2020-04-14")),
                  timeFormat = "%Y-%m-%d"
                )
              ),
@@ -110,8 +110,8 @@ ui <- fluidPage(navbarPage(
                  "dates_reg",
                  h3("Choose a date range"),
                  min = as.Date("2020-02-25", "%Y-%m-%d"),
-                 max = as.Date("2020-04-13", "%Y-%m-%d"),
-                 value = c(as.Date("2020-02-25"), as.Date("2020-04-13")),
+                 max = as.Date("2020-04-14", "%Y-%m-%d"),
+                 value = c(as.Date("2020-02-25"), as.Date("2020-04-14")),
                  timeFormat = "%Y-%m-%d"
                )
              ),
@@ -136,7 +136,7 @@ server <- function(input, output) {
   data$fallecimientos[is.na(data$fallecimientos)] <- 0
   
   data_2 <- read.csv(file = "./data/ccaa_covid19_casos.csv", header = T)
-  data_2<-data_2[1:19,3:49]
+  data_2<-data_2[1:19,3:50]
   data_2<-t(data_2)
   names <- c("andalucia","aragon","asturias","baleares","canarias","cantabria","castillalamancha","castillayleon","cataluna","ceuta","cvalenciana","extremadura","galicia","cdemadrid","melilla","murcia","navarra","paisvasco","larioja")
   colnames(data_2)<-names
