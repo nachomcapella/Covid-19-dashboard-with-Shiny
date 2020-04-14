@@ -74,6 +74,29 @@ ui <- fluidPage(navbarPage(
   tabPanel("Regions",
            sidebarLayout(
              sidebarPanel(
+               
+               selectInput("select_reg", h3("Select CC.AA."), 
+                           choices = list("Andalucia" = "andalucia",
+                                          "Aragon" = "aragon",
+                                          "Asturias" = "asturias",
+                                          "Baleares" = "baleares",
+                                          "Canarias" = "canarias",
+                                          "Cantabria" = "cantabria",
+                                          "Castilla-La Mancha" = "castillalamancha",
+                                          "Castilla y Leon" = "castillayleon",
+                                          "Cataluna" = "cataluna",
+                                          "Ceuta" = "ceuta",
+                                          "C. Valenciana" = "cvalenciana",
+                                          "C. de Madrid" = "cdemadrid",
+                                          "Extremadura" = "extremadura",
+                                          "Galicia" = "galicia",
+                                          "Melilla" = "melilla",
+                                          "Murcia" = "murcia",
+                                          "Navarra" = "navarra",
+                                          "Pais Vasco" = "paisvasco",
+                                          "La Rioja" = "larioja"),
+                           selected = "andalucia"),
+               
                h3("Choose a visualization"),
                checkboxInput(
                  "check_reg_1","Total cases (linear)", value= T),
@@ -113,9 +136,9 @@ server <- function(input, output) {
   data$fallecimientos[is.na(data$fallecimientos)] <- 0
   
   data_2 <- read.csv(file = "./data/ccaa_covid19_casos.csv", header = T)
-  data_2<-data_2[1:18,3:49]
+  data_2<-data_2[1:19,3:49]
   data_2<-t(data_2)
-  names <- c("Andalucia", "Asturias","Baleares","Canarias","Cantabria","CastillaLaMancha","CastillaYLeon","Cataluna","Ceuta","CValenciana","Extremadura","Galicia","Madrid","Melilla","Murcia","Navarra","PaisVasco","LaRioja")
+  names <- c("andalucia","aragon","asturias","baleares","canarias","cantabria","castillalamancha","castillayleon","cataluna","ceuta","cvalenciana","extremadura","galicia","cdemadrid","melilla","murcia","navarra","paisvasco","larioja")
   colnames(data_2)<-names
   data_2<-as.data.frame(rbind(rep(0,18), rep(0,18), data_2))
   fecha<-data$fecha
@@ -275,7 +298,7 @@ server <- function(input, output) {
     # remove the null plots from ptlist and wtlist
     to_delete <- !sapply(ptlist,is.null)
     ptlist <- ptlist[to_delete] 
-    wtlist <- wtlist[to_delete]
+    #wtlist <- wtlist[to_delete]
     if (length(ptlist)==0) return(NULL)
     return(subplot(ptlist, nrows=length(ptlist),shareX = T, shareY = F))
     })
@@ -345,21 +368,89 @@ server <- function(input, output) {
     # remove the null plots from ptlist and wtlist
     to_delete <- !sapply(ptlist,is.null)
     ptlist <- ptlist[to_delete] 
-    wtlist <- wtlist[to_delete]
+    #wtlist <- wtlist[to_delete]
     if (length(ptlist)==0) return(NULL)
     return(subplot(ptlist, nrows=length(ptlist),shareX = T, shareY = F))
   })
   
-}
+
 
 ######################################################################
 # CC.AA.
 ######################################################################
-data_2 <- read.csv(file = "./data/ccaa_covid19_casos.csv")
-data_2<-t(data_2)
-# casos_aragon <- t(data_2[2,3:length(data_2)]) #Transpose desired data.
-# data["infectados_aragon"] <- c(0,0,casos_aragon)
 
+region_data <- reactive({
+  return(data_2[,input$select_reg])
+})
+  
+plot_reg_1 <- reactive({
+  if (!input$check_reg_1) return(NULL)
+  date_range <- c(input$dates_reg[1], input$dates_reg[2])
+  dataset<-data.frame(region_data(),data$fecha)
+  colnames(dataset)[1] <- "values"
+  colnames(dataset)[2] <- "dates"
+  title<-"Sick vs date"
+  ylab<-"Cases (linear)"
+  xlab<-"Date"
+  ggplotly(plot_total_linear_func(date_range,dataset,title,ylab,xlab))
+})
+plot_reg_2 <- reactive({
+  if (!input$check_reg_2) return(NULL)
+  date_range <- c(input$dates_reg[1], input$dates_reg[2])
+  dataset<-data.frame(region_data(),data$fecha)
+  colnames(dataset)[1] <- "values"
+  colnames(dataset)[2] <- "dates"
+  title<-"Sick vs date"
+  ylab<-"Cases (log)"
+  xlab<-"Date"
+  ggplotly(plot_total_log_func(date_range,dataset,title,ylab,xlab))
+})
+plot_reg_3 <- reactive({
+  if (!input$check_reg_3) return(NULL)
+  date_range <- c(input$dates_reg[1], input$dates_reg[2])
+  dataset<-data.frame(region_data(),data$fecha)
+  colnames(dataset)[1] <- "values"
+  colnames(dataset)[2] <- "dates"
+  title<-"Sick vs date"
+  ylab<-"New cases (absolute)"
+  xlab<-"Date"
+  ggplotly(plot_new_cases_abs_func(date_range,dataset,title,ylab,xlab))
+})
+plot_reg_4 <- reactive({
+  if (!input$check_reg_4) return(NULL)
+  date_range <- c(input$dates_reg[1], input$dates_reg[2])
+  dataset<-data.frame(region_data(),data$fecha)
+  colnames(dataset)[1] <- "values"
+  colnames(dataset)[2] <- "dates"
+  title<-"Sick vs date"
+  ylab<-"New cases (+%)"
+  xlab<-"Date"
+  ggplotly(plot_new_cases_perc_func(date_range,dataset,title,ylab,xlab))
+})
+
+output$plot_reg = renderPlotly({
+  ptlist <- list(plot_reg_1(),plot_reg_2(),plot_reg_3(),plot_reg_4())
+  if (length(ptlist)==1){
+    wtlist=c(100)
+  } 
+  if (length(ptlist)==2){
+    wtlist=c(50,50)
+  } 
+  if (length(ptlist)==3){
+    wtlist=c(33.33,33.33,33.33)
+  }
+  if (length(ptlist)==4){
+    wtlist=c(25,25,25,25)
+  } 
+  # remove the null plots from ptlist and wtlist
+  to_delete <- !sapply(ptlist,is.null)
+  ptlist <- ptlist[to_delete] 
+  #wtlist <- wtlist[to_delete]
+  if (length(ptlist)==0) return(NULL)
+  return(subplot(ptlist, nrows=length(ptlist),shareX = T, shareY = F))
+})
+
+}
 
 # Run the application
 shinyApp(ui = ui, server = server)
