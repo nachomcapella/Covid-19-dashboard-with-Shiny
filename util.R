@@ -1,3 +1,54 @@
+#Reading the data:
+get_data <- function() {
+  print("Reading the data...")
+  data <- read.csv(file = "./data/nacional_covid19.csv")
+  colnames(data)[1] <- "fecha"
+  data$fecha <- as.Date(data$fecha)
+  data$fallecimientos[is.na(data$fallecimientos)] <- 0
+  
+
+  
+  
+  data_2 <-
+    read.csv(file = "./data/ccaa_covid19_casos.csv", header = T)
+  data_2 <- data_2[1:19, 3:dim(data_2)[2]]
+  data_2 <-
+    t(data_2)
+  names <-
+    c(
+      "andalucia",
+      "aragon",
+      "asturias",
+      "baleares",
+      "canarias",
+      "cantabria",
+      "castillalamancha",
+      "castillayleon",
+      "cataluna",
+      "ceuta",
+      "cvalenciana",
+      "extremadura",
+      "galicia",
+      "cdemadrid",
+      "melilla",
+      "murcia",
+      "navarra",
+      "paisvasco",
+      "larioja"
+    )
+  colnames(data_2) <- names
+  data_2 <- as.data.frame(rbind(rep(0, 18), rep(0, 18), data_2))
+  fecha <- data$fecha
+  data_2 <- as.data.frame(cbind(fecha, data_2))
+  
+  print("Data modified!")
+  
+  return(list(data, data_2))
+}
+
+
+
+
 #Working with the data:
 get_daily_increment_absolute <- function(cases) {
   number_days <- length(cases)
@@ -20,8 +71,7 @@ get_daily_increment_absolute <- function(cases) {
 }
 
 get_daily_increment_percentage <- function(cases) {
-  
-  cases<-get_daily_increment_absolute(cases)
+  cases <- get_daily_increment_absolute(cases)
   
   number_days <- length(cases)
   print(number_days)

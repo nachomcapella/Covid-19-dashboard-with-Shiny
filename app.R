@@ -34,8 +34,8 @@ ui <- fluidPage(navbarPage(
                  "dates_sick",
                  h3("Choose a date range"),
                  min = as.Date("2020-02-25", "%Y-%m-%d"),
-                 max = as.Date("2020-04-14", "%Y-%m-%d"),
-                 value = c(as.Date("2020-02-25"), as.Date("2020-04-14")),
+                 max = as.Date("2020-04-16", "%Y-%m-%d"),
+                 value = c(as.Date("2020-02-25"), as.Date("2020-04-16")),
                  timeFormat = "%Y-%m-%d"
                )
              ),
@@ -61,8 +61,8 @@ ui <- fluidPage(navbarPage(
                  "dates_dead",
                  h3("Choose a date range"),
                  min = as.Date("2020-02-25", "%Y-%m-%d"),
-                 max = as.Date("2020-04-14", "%Y-%m-%d"),
-                 value = c(as.Date("2020-02-25"), as.Date("2020-04-14")),
+                 max = as.Date("2020-04-16", "%Y-%m-%d"),
+                 value = c(as.Date("2020-02-25"), as.Date("2020-04-16")),
                  timeFormat = "%Y-%m-%d"
                )
              ),
@@ -106,15 +106,25 @@ ui <- fluidPage(navbarPage(
                  "check_reg_3","New cases (absolute)", value= F),
                checkboxInput(
                  "check_reg_4","New cases (%)", value= F),
+               
                sliderInput(
                  "dates_reg",
                  h3("Choose a date range"),
                  min = as.Date("2020-02-25", "%Y-%m-%d"),
-                 max = as.Date("2020-04-14", "%Y-%m-%d"),
-                 value = c(as.Date("2020-02-25"), as.Date("2020-04-14")),
-                 timeFormat = "%Y-%m-%d"
-               )
-             ),
+                 max = as.Date("2020-04-16", "%Y-%m-%d"),
+                 value = c(as.Date("2020-02-25"), as.Date("2020-04-16")),
+                 timeFormat = "%Y-%m-%d")),
+               
+             #   tags$div(id = 'placeholder') 
+             #   # sliderInput(
+             #   #   "dates_reg",
+             #   #   h3("Choose a date range"),
+             #   #   min = as.Date("2020-02-25", "%Y-%m-%d"),
+             #   #   max = as.Date("2020-04-16", "%Y-%m-%d"),
+             #   #   value = c(as.Date("2020-02-25"), as.Date("2020-04-16")),
+             #   #   timeFormat = "%Y-%m-%d"
+             #   # )
+             # ),
              
              # Show a plot of the generated distribution
              mainPanel(
@@ -128,23 +138,29 @@ server <- function(input, output) {
   library("ggplot2")
   library("ggpubr")
   
-  #Reading the data:
-  print("Reading the data...")
-  data <- read.csv(file = "./data/nacional_covid19.csv")
-  colnames(data)[1] <- "fecha"
-  data$fecha <- as.Date(data$fecha)
-  data$fallecimientos[is.na(data$fallecimientos)] <- 0
+  datasets<-get_data()
+  data<-datasets[[1]]
+  data_2<-datasets[[2]]
   
-  data_2 <- read.csv(file = "./data/ccaa_covid19_casos.csv", header = T)
-  data_2<-data_2[1:19,3:50]
-  data_2<-t(data_2)
-  names <- c("andalucia","aragon","asturias","baleares","canarias","cantabria","castillalamancha","castillayleon","cataluna","ceuta","cvalenciana","extremadura","galicia","cdemadrid","melilla","murcia","navarra","paisvasco","larioja")
-  colnames(data_2)<-names
-  data_2<-as.data.frame(rbind(rep(0,18), rep(0,18), data_2))
-  fecha<-data$fecha
-  data_2<-as.data.frame(cbind(fecha,data_2))
+  last_day <- data[dim(data)[1], 1]
+  print(last_day)
   
-  print("Data modified!")
+  # insertUI(
+  #   selector = '#placeholder',
+  #   ## wrap element in a div with id for ease of removal
+  #   ui = tags$div(
+  #     # sliderInput(
+  #     #   "dates_reg",
+  #     #   h3("Choose a date range"),
+  #     #   min = as.Date("2020-02-25", "%Y-%m-%d"),
+  #     #   max = as.Date("2020-04-16", "%Y-%m-%d"),
+  #     #   value = c(as.Date("2020-02-25"), as.Date("2020-04-16")),
+  #     #   timeFormat = "%Y-%m-%d"
+  #     )
+  #   )
+  
+  
+  
   
   #Creating the plots:
   plot_total_linear_func <- function(date_range, dataset, title, ylab, xlab) {
