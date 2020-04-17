@@ -1,5 +1,5 @@
-# COVID-19 Spain
-----------------
+COVID-19 Spain
+================
 
 ## Description
 COVID-19 Spain is a visualization tool that allows the interactive study of the Spanish situation caused by the SARS-CoV-2 (COVID-19) virus.
