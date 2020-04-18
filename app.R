@@ -130,7 +130,8 @@ ui <- fluidPage(navbarPage(
              # Show a plot of the generated distribution
              mainPanel(
                plotlyOutput("plot_reg")
-             )))
+             ))),
+  tabPanel("Instructions")
 ))
     
         
