@@ -123,7 +123,6 @@ ui <- fluidPage(navbarPage(
   tabPanel("About the tool",
            mainPanel(
              h1("COVID-19 Spain"),
-             
              h2("Description"),
              p("COVID-19 Spain is a visualization tool that allows the interactive study of the Spanish situation caused by the SARS-CoV-2 (COVID-19) virus."),
              p("The user can visualize the national sick and dead count and the regional sick count. Each of this options can be explored through an adjustable date range and four different visualizations:"),
@@ -131,7 +130,7 @@ ui <- fluidPage(navbarPage(
              p("- Total cases (log)"),
              p("- Daily cases (absolute)"),
              p("- Daily cases (+%)"),
-             
+             p("The tool has been developped with the ",a("R programming language,",href="https://www.r-project.org/"), "uses the ",a("Shiny library",href="https://shiny.rstudio.com/"), "in order to make the plots interactive and is hosted on the ", a("shinnyapps.io web page.",href="https://www.shinyapps.io/"),"The source code of the tool can be found in this ",a("GitHub repository.",href="https://github.com/nachomcapella/covid-19")),
              h2("Data"),
              p("The data used by the tool are the number of sick and dead caused by COVID-19, both at a national and regional (CC. AA.) level."),
              p("I am specially thankful to the ", strong("Datadista"), " team who have facilitated a clean version of the data in their", a("GitHub repository. ", href= "https://github.com/datadista/datasets/tree/master/COVID%2019"), "They provide a more detailed list of the sources", a("here, ", href = "https://github.com/datadista/datasets/blob/master/COVID%2019/readme.md"), "being the main ones:"),
@@ -140,14 +139,26 @@ ui <- fluidPage(navbarPage(
              p("- ",a("Instituto de Salud Carlos III. Situacion de COVID-19 en Espana.", href="https://covid19.isciii.es/")),
              p("- ",a("BOE: Crisis Sanitaria COVID-19.", href="https://www.boe.es/biblioteca_juridica/codigos/codigo.php?id=355&modo=2&nota=0&tab=2")),
              p("- ",a("Ministerio de Transportes, Movilidad y Agenda Urbana.", href="https://www.mitma.gob.es/transporte-terrestre/punto-de-informacion-de-servicios-de-restauracion")),
-             
              h2("How to use the tool"),
              p("The tool has been designed to be intuitive to use. The user does not have to introduce any kind of data and actions required to adjust the plots are simple."),
              p("When the tool is started, the user encounters a screen like this:"),
-             img(src = "./screenshots/global_view.PNG"),
+             img(src = "global_view.JPG", height=283,width=819),
              p("On the top of the screen we can see four tabs (Sick, Dead, Regions and Instructions). On the left part of the screen we can see the control panel and, on the left, the plot panel. The image corresponds to the Sick tab, which is the one opened by default."),
-             h3("Sick tab")
-           )
+             h3("Sick tab"),
+             p("Let's start explaining the Sick tab. The Sick, Dead and Regions tabs work pretty much the same, so the explanation of this first tab should illustrate how the other two are used."),
+             p("The Sick tab displays plots concerning the number of people infected with COVID-19 at a national level. We can see that we have two main areas: the control panel and the plot panel. The control panel allows the user to select between the different visualizations available and adjust the date range of the data displayed. The user can choose between four different visualizations:"),
+             p("- ",strong("Total cases (linear): "),"Plots the total number of sick people (y axis) against the date (x axis) using a linear scale for the y axis. That is, all the points of the y axis are spaced equally. With this plot we can see the accumulated number of sick people. For example, if the first day there are 10 sick people and on the second day there are 10 new more cases, the numbers on the plot will be 10 and 20, respectively."),
+             p("- ",strong("Total cases (log): "),"It is similar to the previous plot. It displays the total number of sick people (y axis) against the date (x axis) using a log10 scale for the y axis. In this case, the points in the y axis are not equally distributed. The distance between 10 and 100 is the same as the distance between 100 and 1000."),
+             p("- ",strong("New cases (absolute): "),"Plots the number of people that get infected each day. The number of sick people is displayed in the y axis (using a linear scale) and the date, in the x axis. Using the previous example, if the first day there are 10 sick people and on the second day there are 10 new more cases, the numbers on the plot will be 10 and 10, respectively."),
+             p("- ",strong("New cases (+%): "),"It is similar to the previous plot. It displays the percertange of new infections with respect to the previous day against the date. The percertange is plotted in the y axis and the date, again, in the x axis. The percertange represented is the percertange difference between one date and the previous one. Using the same example as before, if the first day there are 10 sick people and on the second day there are 10 new more cases, the plot will display +0%, since there has been no variation. If the first day we have 10 cases and the second day we have 100, the plot will show +900%, since there are the same number of cases plus nine times more. On the other hand, if the first day we have 100 cases and the second one we have 50, the plot will display -50%. Also, a red horizontal line is plotted at the +0% value to help to help in understanding the values."),
+             p("The user can place the mouse over any point in the plot and obtain information about the date and the number of sick people. Which visualization is shown is controlled by clicking on the control panel checkboxes. The four visualizations can be displayed simultaneously. The date range is adjusted by moving the slider ends to the desired dates. In the next image we can see an example where the user has chosen two visualizations (total cases (log) and new cases (absolute)) and a date range between the 2020-03-11 and the 2020-04-7, both included."),
+             img(src = "sick_tab.JPG", height = 283, width = 834),
+             h3("Dead tab"),
+             p("Good news: this tab works the same way as the Sick tab. The only difference is that the data, instead of corresponding to infections, deals with deaths. Everything else is identical: the type of visualizations, how to select them, how to adjust the date range, etc. The death count, as the sick cases of the Sick tab, is for the whole country."),
+             h3("Regions tab"),
+             p("The Regions tan is concerned with the number of infections that have taken place in each region of Spain. These regions are called Comunidades Autonomas (or CC.AA.). The third tab of the tool is pretty similar to the previous two, as it can be seen in the image below. The only difference is that the user can select among the different CC.AA. in the new box of the control panel."),
+             img(src="region_tab.JPG", height = 330,width = 839)
+             )
            )
 ))
     

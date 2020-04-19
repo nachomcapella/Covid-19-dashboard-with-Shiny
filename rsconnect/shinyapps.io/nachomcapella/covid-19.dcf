@@ -5,9 +5,9 @@ account: nachomcapella
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2103801
-bundleId: 3027478
+bundleId: 3034829
 url: https://nachomcapella.shinyapps.io/covid-19/
-when: 1587137077.30007
+when: 1587310224.21403
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: datasets
