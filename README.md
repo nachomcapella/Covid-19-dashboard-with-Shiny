@@ -5,10 +5,10 @@ COVID-19 Spain
 COVID-19 Spain is a visualization tool that allows the interactive study of the Spanish situation caused by the SARS-CoV-2 (COVID-19) virus.
 
 The user can visualize the national sick and dead count and the regional sick count. Each of this options can be explored through an adjustable date range and four different visualizations:
-* Total cases (linear scale)
-* Total cases (logarithmic scale)
-* Daily cases (absolute)
-* Daily cases (+%)
+* Total cases (linear)
+* Total cases (log)
+* New cases (absolute)
+* New cases (+%)
 
 ## Link to the tool
 The tool can be accessed [here](https://nachomcapella.shinyapps.io/covid-19/). It works in the browser, so it can be used on computers, tablets and smartphones.
@@ -16,7 +16,7 @@ The tool can be accessed [here](https://nachomcapella.shinyapps.io/covid-19/). I
 ## Data
 The data used by the tool are the number of sick and dead caused by COVID-19, both at a national and regional (CC. AA.) level.
 
-I am specially thankful to the Datadista team who have facilitated a clean version of the data in their [GitHub repository](https://github.com/datadista/datasets/tree/master/COVID%2019). They provide a more detailed list of the sources [here](https://github.com/datadista/datasets/blob/master/COVID%2019/readme.md), being the main ones:
+I am specially thankful to the **Datadista** team who have facilitated a clean version of the data in their [GitHub repository](https://github.com/datadista/datasets/tree/master/COVID%2019). They provide a more detailed list of the sources [here](https://github.com/datadista/datasets/blob/master/COVID%2019/readme.md), being the main ones:
 * [Ministerio de Sanidad, Consumo y Bienestar Social]( https://www.mscbs.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov-China/situacionActual.htm) and press office of the Ministerio de Sanidad.
 * [Departamento de Seguridad Nacional](https://www.dsn.gob.es/gl/current-affairs/press-room)
 * [Instituto de Salud Carlos III. Situación de COVID-19 en España](https://covid19.isciii.es/)
@@ -54,5 +54,5 @@ Good news: this tab works the same way as the Sick tab. The only difference is t
 #### Regions tab
 The Regions tan is concerned with the number of infections that have taken place in each region of Spain. These regions are called Comunidades Autónomas (or CC.AA.). The third tab of the tool is pretty similar to the previous two, as it can be seen in the image below. The only difference is that the user can select among the different CC.AA. in the new box of the control panel.
 
-![Region tab example](./screenshots/Region_tab.PNG)
+![Region tab example](./screenshots/region_tab.PNG)
 ### Project files

@@ -35,8 +35,8 @@ ui <- fluidPage(navbarPage(
                  "dates_sick",
                  h3("Choose a date range"),
                  min = as.Date("2020-02-25", "%Y-%m-%d"),
-                 max = as.Date("2020-04-17", "%Y-%m-%d"),
-                 value = c(as.Date("2020-02-25"), as.Date("2020-04-17")),
+                 max = as.Date("2020-04-19", "%Y-%m-%d"),
+                 value = c(as.Date("2020-02-25"), as.Date("2020-04-19")),
                  timeFormat = "%Y-%m-%d"
                )
              ),
@@ -62,8 +62,8 @@ ui <- fluidPage(navbarPage(
                  "dates_dead",
                  h3("Choose a date range"),
                  min = as.Date("2020-02-25", "%Y-%m-%d"),
-                 max = as.Date("2020-04-17", "%Y-%m-%d"),
-                 value = c(as.Date("2020-02-25"), as.Date("2020-04-17")),
+                 max = as.Date("2020-04-19", "%Y-%m-%d"),
+                 value = c(as.Date("2020-02-25"), as.Date("2020-04-19")),
                  timeFormat = "%Y-%m-%d"
                )
              ),
@@ -112,31 +112,45 @@ ui <- fluidPage(navbarPage(
                  "dates_reg",
                  h3("Choose a date range"),
                  min = as.Date("2020-02-25", "%Y-%m-%d"),
-                 max = as.Date("2020-04-17", "%Y-%m-%d"),
-                 value = c(as.Date("2020-02-25"), as.Date("2020-04-17")),
+                 max = as.Date("2020-04-19", "%Y-%m-%d"),
+                 value = c(as.Date("2020-02-25"), as.Date("2020-04-19")),
                  timeFormat = "%Y-%m-%d")),
-             
-             #   tags$div(id = 'placeholder') 
-             #   # sliderInput(
-             #   #   "dates_reg",
-             #   #   h3("Choose a date range"),
-             #   #   min = as.Date("2020-02-25", "%Y-%m-%d"),
-             #   #   max = as.Date("2020-04-17", "%Y-%m-%d"),
-             #   #   value = c(as.Date("2020-02-25"), as.Date("2020-04-17")),
-             #   #   timeFormat = "%Y-%m-%d"
-             #   # )
-             # ),
-             
+
              # Show a plot of the generated distribution
              mainPanel(
                plotlyOutput("plot_reg")
              ))),
-  tabPanel("Instructions")
+  tabPanel("About the tool",
+           mainPanel(
+             h1("COVID-19 Spain"),
+             
+             h2("Description"),
+             p("COVID-19 Spain is a visualization tool that allows the interactive study of the Spanish situation caused by the SARS-CoV-2 (COVID-19) virus."),
+             p("The user can visualize the national sick and dead count and the regional sick count. Each of this options can be explored through an adjustable date range and four different visualizations:"),
+             p("- Total cases (linear)"),
+             p("- Total cases (log)"),
+             p("- Daily cases (absolute)"),
+             p("- Daily cases (+%)"),
+             
+             h2("Data"),
+             p("The data used by the tool are the number of sick and dead caused by COVID-19, both at a national and regional (CC. AA.) level."),
+             p("I am specially thankful to the ", strong("Datadista"), " team who have facilitated a clean version of the data in their", a("GitHub repository. ", href= "https://github.com/datadista/datasets/tree/master/COVID%2019"), "They provide a more detailed list of the sources", a("here, ", href = "https://github.com/datadista/datasets/blob/master/COVID%2019/readme.md"), "being the main ones:"),
+             p("- ",a("Ministerio de Sanidad, Consumo y Bienestar Social",href="https://www.mscbs.gob.es/profesionales/saludPublica/ccayes/alertasActual/nCov-China/situacionActual.htm"), "and press office of the Ministerio de Sanidad."),
+             p("- ",a("Departamento de Seguridad Nacional.", href="https://www.dsn.gob.es/gl/current-affairs/press-room")),
+             p("- ",a("Instituto de Salud Carlos III. Situacion de COVID-19 en Espana.", href="https://covid19.isciii.es/")),
+             p("- ",a("BOE: Crisis Sanitaria COVID-19.", href="https://www.boe.es/biblioteca_juridica/codigos/codigo.php?id=355&modo=2&nota=0&tab=2")),
+             p("- ",a("Ministerio de Transportes, Movilidad y Agenda Urbana.", href="https://www.mitma.gob.es/transporte-terrestre/punto-de-informacion-de-servicios-de-restauracion")),
+             
+             h2("How to use the tool"),
+             p("The tool has been designed to be intuitive to use. The user does not have to introduce any kind of data and actions required to adjust the plots are simple."),
+             p("When the tool is started, the user encounters a screen like this:"),
+             img(src = "./screenshots/global_view.PNG"),
+             p("On the top of the screen we can see four tabs (Sick, Dead, Regions and Instructions). On the left part of the screen we can see the control panel and, on the left, the plot panel. The image corresponds to the Sick tab, which is the one opened by default."),
+             h3("Sick tab")
+           )
+           )
 ))
     
-        
-        
-        
         
         # Define server logic required to draw a histogram
         server <- function(input, output) {
@@ -148,41 +162,7 @@ ui <- fluidPage(navbarPage(
           data_2 <- datasets[[2]]
           
           last_day <- data[dim(data)[1], 1]
-          
-          
-          
-          
-          
-          # insertUI(
-          #   selector = "#placeholder_dead",
-          #   ui=tag$div(
-          #     sliderInput(
-          #       "dates_dead",
-          #       h3("Choose a date range"),
-          #       min = as.Date("2020-02-25", "%Y-%m-%d"),
-          #       max = as.Date("2020-04-17", "%Y-%m-%d"),
-          #       value = c(as.Date("2020-02-25"), as.Date("2020-04-17")),
-          #       timeFormat = "%Y-%m-%d"
-          #     )
-          #   )
-          # )
-          
-          # insertUI(
-          #   selector = '#placeholder_reg',
-          #   ## wrap element in a div with id for ease of removal
-          #   ui = tags$div(
-          #     sliderInput(
-          #       "dates_reg",
-          #       h3("Choose a date range"),
-          #       min = as.Date("2020-02-25", "%Y-%m-%d"),
-          #       max = as.Date("2020-04-17", "%Y-%m-%d"),
-          #       value = c(as.Date("2020-02-25"), as.Date("2020-04-17")),
-          #       timeFormat = "%Y-%m-%d"
-          #     )
-          #   )
-          # )
-          #
-          
+        
           
           
           #Creating the plots:
