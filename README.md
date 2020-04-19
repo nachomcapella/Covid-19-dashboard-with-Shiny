@@ -31,7 +31,7 @@ I am specially thankful to the **Datadista** team who have facilitated a clean v
 The tool has been designed to be intuitive to use. The user does not have to introduce any kind of data and actions required to adjust the plots are simple.
 
 When the tool is started, the user encounters a screen like this:
-![Opening screen](./screenshots/global_view.JPG)
+![Opening screen](./www/global_view.JPG)
 
 On the top of the screen we can see four tabs (Sick, Dead, Regions and About the tool). On the left part of the screen we can see the control panel and, on the left, the plot panel. The image corresponds to the Sick tab, which is the one opened by default.
 #### Sick tab
@@ -48,7 +48,7 @@ The Sick tab displays plots concerning the number of people infected with COVID-
 
 The user can place the mouse over any point in the plot and obtain information about the date and the number of sick people. Which visualization is shown is controlled by clicking on the control panel checkboxes. The four visualizations can be displayed simultaneously. The date range is adjusted by moving the slider ends to the desired dates. In the next image we can see an example where the user has chosen two visualizations (total cases (log) and new cases (absolute)) and a date range between the 2020-03-11 and the 2020-04-7, both included.
 
-![Sick tab example](./screenshots/sick_tab.JPG)
+![Sick tab example](./www/sick_tab.JPG)
 
 #### Dead tab
 Good news: this tab works the same way as the Sick tab. The only difference is that the data, instead of corresponding to infections, deals with deaths.  Everything else is identical: the type of visualizations, how to select them, how to adjust the date range, etc. The death count, as the sick cases of the Sick tab, is for the whole country.
@@ -56,7 +56,7 @@ Good news: this tab works the same way as the Sick tab. The only difference is t
 #### Regions tab
 The Regions tan is concerned with the number of infections that have taken place in each region of Spain. These regions are called Comunidades Autónomas (or CC.AA.). The third tab of the tool is pretty similar to the previous two, as it can be seen in the image below. The only difference is that the user can select among the different CC.AA. in the new box of the control panel.
 
-![Region tab example](./screenshots/region_tab.JPG)
+![Region tab example](./www/region_tab.JPG)
 
 #### About the tool tab
 This last tab contains basically the same information that is posted here. That is, it describes the tool, cites the data origin and explains how to use it.
@@ -67,7 +67,7 @@ The source code of the tool can be found in this [GitHub repository](https://git
 
 * **datasets** folder: Contains a copy of [Datadista's GitHub repository](https://github.com/datadista/datasets/tree/master/COVID%2019).
 * **rsconnect/shinyapps.io/nachomcapella** folder: shinnyapps.io stuff.
-* **wwww** folder: Contains the images used in this README file and in the About the tool tab. Why the www name? Because Shiny wants it that way.
+* **www** folder: Contains the images used in this README file and in the About the tool tab. Why the www name? Because Shiny wants it that way.
 * **README.md**: This file.
 * **app.R**: Contains the main pieces of code. They are divided in ui (the user interface) and server (the part that does the operations).
 * **util.R**: Contains additional code that is used by the app.R file.
