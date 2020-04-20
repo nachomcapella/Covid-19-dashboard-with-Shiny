@@ -87,10 +87,14 @@ get_daily_increment_percentage <- function(cases) {
     }
     
     
-    if (previous_day == 0) {
-      increment <- 0
+    if (previous_day == 0 &  present_day!=0) {
+      increment <- NaN
     }
-    else{
+    if
+    (previous_day == 0 &  present_day==0){
+      increment<-0
+    }
+     if(previous_day !=0){
       increment <- (present_day  - previous_day)/ previous_day * 100 
     }
     
