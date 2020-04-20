@@ -31,6 +31,7 @@ I am specially thankful to the **Datadista** team who have facilitated a clean v
 The tool has been designed to be intuitive to use. The user does not have to introduce any kind of data and actions required to adjust the plots are simple.
 
 When the tool is started, the user encounters a screen like this:
+
 ![Opening screen](./www/global_view.JPG)
 
 On the top of the screen we can see four tabs (Sick, Dead, Regions and About the tool). On the left part of the screen we can see the control panel and, on the left, the plot panel. The image corresponds to the Sick tab, which is the one opened by default.
