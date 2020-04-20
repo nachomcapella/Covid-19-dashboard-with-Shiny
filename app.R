@@ -150,7 +150,8 @@ ui <- fluidPage(navbarPage(
              p("- ",strong("Total cases (linear): "),"Plots the total number of sick people (y axis) against the date (x axis) using a linear scale for the y axis. That is, all the points of the y axis are spaced equally. With this plot we can see the accumulated number of sick people. For example, if the first day there are 10 sick people and on the second day there are 10 new more cases, the numbers on the plot will be 10 and 20, respectively."),
              p("- ",strong("Total cases (log): "),"It is similar to the previous plot. It displays the total number of sick people (y axis) against the date (x axis) using a log10 scale for the y axis. In this case, the points in the y axis are not equally distributed. The distance between 10 and 100 is the same as the distance between 100 and 1000."),
              p("- ",strong("New cases (absolute): "),"Plots the number of people that get infected each day. The number of sick people is displayed in the y axis (using a linear scale) and the date, in the x axis. Using the previous example, if the first day there are 10 sick people and on the second day there are 10 new more cases, the numbers on the plot will be 10 and 10, respectively."),
-             p("- ",strong("New cases (+%): "),"It is similar to the previous plot. It displays the percertange of new infections with respect to the previous day against the date. The percertange is plotted in the y axis and the date, again, in the x axis. The percertange represented is the percertange difference between one date and the previous one. Using the same example as before, if the first day there are 10 sick people and on the second day there are 10 new more cases, the plot will display +0%, since there has been no variation. If the first day we have 10 cases and the second day we have 100, the plot will show +900%, since there are the same number of cases plus nine times more. On the other hand, if the first day we have 100 cases and the second one we have 50, the plot will display -50%. Also, a red horizontal line is plotted at the +0% value to help to help in understanding the values."),
+             p("- ",strong("New cases (+%): "),"It is similar to the previous plot. It displays the percertange of new infections with respect to the previous day against the date. The percertange is plotted in the y axis and the date, again, in the x axis. The percertange represented is the percertange difference between the new cases of one date and the previous one. The following table offers an example. If the number of cases of the previous day is zero, the next date shows +0%."),
+             tableOutput('tbl'),
              p("The user can place the mouse over any point in the plot and obtain information about the date and the number of sick people. Which visualization is shown is controlled by clicking on the control panel checkboxes. The four visualizations can be displayed simultaneously. The date range is adjusted by moving the slider ends to the desired dates. In the next image we can see an example where the user has chosen two visualizations (total cases (log) and new cases (absolute)) and a date range between the 2020-03-11 and the 2020-04-7, both included."),
              img(src = "sick_tab.JPG", height = 283, width = 834),
              h3("Dead tab"),
@@ -167,6 +168,11 @@ ui <- fluidPage(navbarPage(
         server <- function(input, output) {
           library("ggplot2")
           library("ggpubr")
+          
+          df<-as.data.frame(get_table_example())
+          output$tbl <- renderTable({ df},  
+                                                  striped = TRUE,  
+                                                  spacing = 's')  
           
           datasets <- get_data()
           data <- datasets[[1]]

@@ -11,17 +11,10 @@ get_data <- function() {
   
   #data_2 <-"https://raw.github.com/datadista/datasets/blob/master/COVID%2019/ccaa_covid19_casos.csv"
   data_2 <- read.csv(file="./data/ccaa_covid19_casos.csv", header = T)
-  
-  print("A")
-  
   data_2 <- data_2[1:19, 3:dim(data_2)[2]]
-  print("B")
-  
-  
   data_2 <-
     t(data_2)
-  print("C")
-  
+
   names <-
     c(
       "andalucia",
@@ -44,24 +37,13 @@ get_data <- function() {
       "paisvasco",
       "larioja"
     )
-  print("D")
-  
   colnames(data_2) <- names
-  print("E")
-  
   data_2 <- as.data.frame(rbind(rep(0, 18), rep(0, 18), data_2))
-  print("F")
   
   fecha <- data$fecha
-  print("G")
-  print(length(fecha))
-  print(dim(data_2))
   data_2 <- as.data.frame(cbind(fecha, data_2))
-  print("H")
-  
   
   print("Data modified!")
-  
   return(list(data, data_2))
 }
 
@@ -69,13 +51,12 @@ get_data <- function() {
 #Working with the data:
 get_daily_increment_absolute <- function(cases) {
   number_days <- length(cases)
-  print(number_days)
   daily_increment = c()
   daily_increment[1] = 0
   
   for (i in c(1:number_days)) {
     if (i == number_days) {
-      daily_increment[i] <- cases[i] - cases[i - 1]
+      daily_increment[i] <- (cases[i] - cases[i - 1])
       return(daily_increment)
     }
     present_day <- cases[i + 1]
@@ -88,27 +69,49 @@ get_daily_increment_absolute <- function(cases) {
 }
 
 get_daily_increment_percentage <- function(cases) {
-  cases <- get_daily_increment_absolute(cases)
+  cases <- get_daily_increment(cases)
   
   number_days <- length(cases)
-  print(number_days)
   daily_increment = c()
   daily_increment[1] = 0
   
   for (i in c(1:number_days)) {
-    if (i == number_days) {
-      daily_increment[i] <- cases[i] / cases[i - 1] * 100 - 100
-      return(daily_increment)
+    
+    
+    if (i==number_days) {
+      present_day <- cases[i]
+      previous_day <- cases[i-1]
+    }else{
+      present_day <- cases[i + 1]
+      previous_day <- cases[i]
     }
-    present_day <- cases[i + 1]
-    previous_day <- cases[i]
+    
+    
     if (previous_day == 0) {
       increment <- 0
-    } else{
-      increment <- present_day / previous_day * 100 - 100
+    }
+    else{
+      increment <- (present_day  - previous_day)/ previous_day * 100 
+    }
+    
+    if(previous_day<0){
+      increment<-increment*(-1)
+    }
+    
+    if(i==number_days){
+      daily_increment[i]<-increment
+      return(daily_increment)
     }
     daily_increment[i + 1] <- increment
   }
   
   return(daily_increment)
 }
+
+get_table_example <- function(){
+ a <- c(3,10,16,32,44,66,114, 135, 198)
+ a<- c(10,10,100,200,100,75)
+ df<-cbind(a,get_daily_increment_absolute(a),get_daily_increment_percentage(a))
+ colnames(df)<-c("Total cases","New cases (absolute)", "New cases (+%)")
+ return(df)
+ }
