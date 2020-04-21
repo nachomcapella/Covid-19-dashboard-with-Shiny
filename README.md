@@ -7,8 +7,8 @@ COVID-19 Spain is a visualization tool that allows the interactive study of the 
 The user can visualize the national sick and dead count and the regional sick count. Each of this options can be explored through an adjustable date range and four different visualizations:
 * Total cases (linear)
 * Total cases (log)
-* New cases (absolute)
-* New cases (+%)
+* New cases
+* New cases variation (+%)
 
 It has been developped with the [R programming language](https://www.r-project.org/), uses the [Shiny library](https://shiny.rstudio.com/) in order to make the plots interactive and is hosted on the [shinnyapps.io web page](https://www.shinyapps.io/).
 
@@ -32,7 +32,7 @@ The tool has been designed to be intuitive to use. The user does not have to int
 
 When the tool is started, the user encounters a screen like this:
 
-![Opening screen](./www/global_view.JPG)
+![Global view](./www/global_view.JPG)
 
 On the top of the screen we can see four tabs (Sick, Dead, Regions and About the tool). On the left part of the screen we can see the control panel and, on the left, the plot panel. The image corresponds to the Sick tab, which is the one opened by default.
 #### Sick tab
@@ -43,12 +43,12 @@ The Sick tab displays plots concerning the number of people infected with COVID-
 
 
 * **Total cases (log)**: It is similar to the previous plot. It displays the total number of sick people (y axis) against the date (x axis) using a log10 scale for the y axis. In this case, the points in the y axis are not equally distributed. The distance between 10 and 100 is the same as the distance between 100 and 1000.
-* **New cases (absolute)**: Plots the number of people that get infected each day. The number of sick people is displayed in the y axis (using a linear scale) and the date, in the x axis. Using the previous example, if the first day there are 10 sick people and on the second day there are 10 new more cases, the numbers on the plot will be 10 and 10, respectively.
+* **New cases**: Plots the number of people that get infected each day. The number of sick people is displayed in the y axis (using a linear scale) and the date, in the x axis. Using the previous example, if the first day there are 10 sick people and on the second day there are 10 new more cases, the numbers on the plot will be 10 and 10, respectively.
 
-* **New cases (+%)**: It is similar to the previous plot. It displays the percertange of new infections with respect to the previous day against the date. The percertange is plotted in the y axis and the date, again, in the x axis. The percertange represented is the percertange difference between the new cases of one date and the previous one. The following table offers an example.
-<img src="./www/table.JPG" width="425" height="231" />
+* **New cases variation (+%)**: It is similar to the previous plot. It displays the percertange of new infections with respect to the previous day against the date. The percertange is plotted in the y axis and the date, again, in the x axis. The percertange represented is the percertange difference between the new cases of one date and the previous one. The following table offers an example.
+<img src="./www/table.JPG" width="414" height="223" />
 
-The user can place the mouse over any point in the plot and obtain information about the date and the number of sick people. Which visualization is shown is controlled by clicking on the control panel checkboxes. The four visualizations can be displayed simultaneously. The date range is adjusted by moving the slider ends to the desired dates. In the next image we can see an example where the user has chosen two visualizations (total cases (log) and new cases (absolute)) and a date range between the 2020-03-11 and the 2020-04-7, both included.
+The user can place the mouse over any point in the plot and obtain information about the date and the number of sick people. Which visualization is shown is controlled by clicking on the control panel checkboxes. The four visualizations can be displayed simultaneously. The date range is adjusted by moving the slider ends to the desired dates. In the next image we can see an example where the user has chosen two visualizations (total cases (log) and new cases) and a date range between the 2020-03-11 and the 2020-04-7, both included.
 
 ![Sick tab example](./www/sick_tab.JPG)
 

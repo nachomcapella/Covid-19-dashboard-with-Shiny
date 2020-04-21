@@ -116,6 +116,6 @@ get_table_example <- function(){
  a <- c(3,10,16,32,44,66,114, 135, 198)
  a<- c(10,10,100,200,100,75)
  df<-cbind(a,get_daily_increment_absolute(a),get_daily_increment_percentage(a))
- colnames(df)<-c("Total cases","New cases (absolute)", "New cases (+%)")
+ colnames(df)<-c("Total cases","New cases", "New cases variation (+%)")
  return(df)
  }
