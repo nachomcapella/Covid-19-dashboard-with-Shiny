@@ -35,8 +35,8 @@ ui <- fluidPage(navbarPage(
                  "dates_sick",
                  h3("Choose a date range"),
                  min = as.Date("2020-02-25", "%Y-%m-%d"),
-                 max = as.Date("2020-04-26", "%Y-%m-%d"),
-                 value = c(as.Date("2020-02-25"), as.Date("2020-04-26")),
+                 max = as.Date("2020-04-27", "%Y-%m-%d"),
+                 value = c(as.Date("2020-02-25"), as.Date("2020-04-27")),
                  timeFormat = "%Y-%m-%d"
                )
              ),
@@ -62,8 +62,8 @@ ui <- fluidPage(navbarPage(
                  "dates_dead",
                  h3("Choose a date range"),
                  min = as.Date("2020-02-25", "%Y-%m-%d"),
-                 max = as.Date("2020-04-26", "%Y-%m-%d"),
-                 value = c(as.Date("2020-02-25"), as.Date("2020-04-26")),
+                 max = as.Date("2020-04-27", "%Y-%m-%d"),
+                 value = c(as.Date("2020-02-25"), as.Date("2020-04-27")),
                  timeFormat = "%Y-%m-%d"
                )
              ),
@@ -112,8 +112,8 @@ ui <- fluidPage(navbarPage(
                  "dates_reg",
                  h3("Choose a date range"),
                  min = as.Date("2020-02-25", "%Y-%m-%d"),
-                 max = as.Date("2020-04-26", "%Y-%m-%d"),
-                 value = c(as.Date("2020-02-25"), as.Date("2020-04-26")),
+                 max = as.Date("2020-04-27", "%Y-%m-%d"),
+                 value = c(as.Date("2020-02-25"), as.Date("2020-04-27")),
                  timeFormat = "%Y-%m-%d")),
 
              # Show a plot of the generated distribution
