@@ -118,4 +118,6 @@ get_table_example <- function(){
  df<-cbind(a,get_daily_increment_absolute(a),get_daily_increment_percentage(a))
  colnames(df)<-c("Total cases","New cases", "New cases variation (+%)")
  return(df)
- }
+}
+
+
