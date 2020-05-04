@@ -38,11 +38,10 @@ get_data <- function() {
       "larioja"
     )
   colnames(data_2) <- names
-  data_2 <- as.data.frame(rbind(rep(0, 18), rep(0, 18), data_2))
+  data_2 <- as.data.frame(rbind(rep(0, 18), data_2))
   
   fecha <- data$fecha
   data_2 <- as.data.frame(cbind(fecha, data_2))
-  
   print("Data modified!")
   return(list(data, data_2))
 }
