@@ -2,7 +2,7 @@
 library(httr)
 get_data <- function() {
   print("Reading the data...")
-  data <- read.csv(file = "./data/nacional_covid19.csv")
+  data <- read.csv(file = "../data/nacional_covid19.csv")
   #data<-read.csv(text=GET("https://raw.github.com/datadista/datasets/blob/master/COVID%2019/nacional_covid19.csv"))
   #data <- read.csv(data)
   colnames(data)[1] <- "fecha"
@@ -12,7 +12,7 @@ get_data <- function() {
   View(data)
   
   #data_2 <-"https://raw.github.com/datadista/datasets/blob/master/COVID%2019/ccaa_covid19_casos.csv"
-  data_2 <- read.csv(file="./data/ccaa_covid19_casos.csv", header = T)
+  data_2 <- read.csv(file="../data/ccaa_covid19_casos.csv", header = T)
   
   
   data_2 <- data_2[1:19, 3:dim(data_2)[2]]

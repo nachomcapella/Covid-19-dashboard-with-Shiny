@@ -31,12 +31,13 @@ ui <- fluidPage(navbarPage(
                  "check_sick_3","New cases", value= F),
                checkboxInput(
                  "check_sick_4","New cases variation (+%)", value= F),
+               
                sliderInput(
                  "dates_sick",
                  h3("Choose a date range"),
                  min = as.Date("2020-02-25", "%Y-%m-%d"),
-                 max = as.Date("2020-05-07", "%Y-%m-%d"),
-                 value = c(as.Date("2020-02-25"), as.Date("2020-05-07")),
+                 max = as.Date("2020-05-11", "%Y-%m-%d"),
+                 value = c(as.Date("2020-02-25"), as.Date("2020-05-11")),
                  timeFormat = "%Y-%m-%d"
                )
              ),
@@ -62,8 +63,8 @@ ui <- fluidPage(navbarPage(
                  "dates_dead",
                  h3("Choose a date range"),
                  min = as.Date("2020-02-25", "%Y-%m-%d"),
-                 max = as.Date("2020-05-07", "%Y-%m-%d"),
-                 value = c(as.Date("2020-02-25"), as.Date("2020-05-07")),
+                 max = as.Date("2020-05-11", "%Y-%m-%d"),
+                 value = c(as.Date("2020-02-25"), as.Date("2020-05-11")),
                  timeFormat = "%Y-%m-%d"
                )
              ),
@@ -112,8 +113,8 @@ ui <- fluidPage(navbarPage(
                  "dates_reg",
                  h3("Choose a date range"),
                  min = as.Date("2020-02-25", "%Y-%m-%d"),
-                 max = as.Date("2020-05-07", "%Y-%m-%d"),
-                 value = c(as.Date("2020-02-25"), as.Date("2020-05-07")),
+                 max = as.Date("2020-05-11", "%Y-%m-%d"),
+                 value = c(as.Date("2020-02-25"), as.Date("2020-05-11")),
                  timeFormat = "%Y-%m-%d")),
 
              # Show a plot of the generated distribution
