@@ -15,39 +15,80 @@ source("util.R")
 source("get_data.R")
 
 
-
 # Define UI for application that draws a histogram
-# Define UI for application that draws a histogram
-ui <- fluidPage(navbarPage("COVID-19 Spain",
-                           tabPanel(
-                             "Sick",
-                             sidebarLayout(
-                               sidebarPanel(
-                                 h3("Choose the data"),
-                                 checkboxInput("check_sick_total", "Total sick cases", value = T),
-                                 checkboxInput("check_sick_pcr", "PCR", value = F),
-                                 checkboxInput("check_sick_test", "Antibody test", value = F),
-
-                                 h3("Choose a visualization"),
-                                 checkboxInput("check_sick_1", "Accumulated cases (linear)", value = T),
-                                 checkboxInput("check_sick_2", "Accumulated cases (log)", value = F),
-                                 checkboxInput("check_sick_3", "New cases", value = F),
-                                 checkboxInput("check_sick_4", "New cases variation (+%)", value = F),
-                                 
-                                 sliderInput(
-                                   "dates_sick",
-                                   h3("Choose a date range"),
-                                   min = as.Date("2020-02-25", "%Y-%m-%d"),
-                                   max = as.Date("2020-05-15", "%Y-%m-%d"),
-                                   value = c(as.Date("2020-02-25"), as.Date("2020-05-15")),
-                                   timeFormat = "%Y-%m-%d"
-                                 )
-                               ),
-                          
-                               # Show a plot of the generated distribution
-                               mainPanel(plotlyOutput("plot_sick"))
-                             )
-                           )))
+ui <- fluidPage(
+  navbarPage(
+    ("COVID-19 Spain"),
+    tabPanel(
+      "National Level",
+      tabsetPanel(
+        tabPanel("Sick",
+                 sidebarLayout(
+                   sidebarPanel(
+                     h3("Choose the data"),
+                     checkboxInput("check_sick_total", "Total sick cases", value = T),
+                     checkboxInput("check_sick_pcr", "PCR", value = F),
+                     checkboxInput("check_sick_test", "Antibody test", value = F),
+                     
+                     h3("Choose a visualization"),
+                     checkboxInput("check_sick_1", "Accumulated cases (linear)", value = T),
+                     checkboxInput("check_sick_2", "Accumulated cases (log)", value = F),
+                     checkboxInput("check_sick_3", "New cases", value = F),
+                     checkboxInput("check_sick_4", "New cases variation (+%)", value = F),
+                     
+                     sliderInput(
+                       "dates_sick",
+                       h3("Choose a date range"),
+                       min = as.Date("2020-02-25", "%Y-%m-%d"),
+                       max = as.Date("2020-05-15", "%Y-%m-%d"),
+                       value = c(as.Date("2020-02-25"), as.Date("2020-05-15")),
+                       timeFormat = "%Y-%m-%d"
+                     )
+                   ),
+                   
+                   # Show a plot of the generated distribution
+                   mainPanel(plotlyOutput("plot_sick"))
+                 )
+        ),
+        tabPanel("Dead",
+                 sidebarLayout(
+                   sidebarPanel(
+                     h3("Choose a visualization"),
+                     checkboxInput(
+                       "check_dead_1","Total cases (linear)", value= T),
+                     checkboxInput(
+                       "check_dead_2","Total cases (log)", value= F),
+                     checkboxInput(
+                       "check_dead_3","New cases", value= F),
+                     checkboxInput(
+                       "check_dead_4","New cases variation (+%)", value= F),
+                     sliderInput(
+                       "dates_dead",
+                       h3("Choose a date range"),
+                       min = as.Date("2020-02-25", "%Y-%m-%d"),
+                       max = as.Date("2020-05-15", "%Y-%m-%d"),
+                       value = c(as.Date("2020-02-25"), as.Date("2020-05-15")),
+                       timeFormat = "%Y-%m-%d"
+                     )
+                   ),
+                   
+                   # Show a plot of the generated distribution
+                   mainPanel(
+                     plotlyOutput("plot_dead")
+                   ))
+        )
+      ) #Close inner tabsetPanel
+      
+    ),
+    tabPanel("Regional Level",
+             fluidRow(
+               column(width = 12,
+                      h1("HI!")
+               )
+             )
+    )
+  ) #Close outer tabsetPanel
+) #Close FluidPage
 
 
 # Define server logic required to draw a histogram
@@ -220,7 +261,7 @@ server <- function(input, output) {
         
         scale_color_manual(values=c("#0C2C84", "#1D91C0", "#7FCDBB"))+
         
-        ggtitle("Accumulated cases (linear)") +
+        ggtitle("Sick cases") +
                ylab("Cases") +
                xlab("Date") +
                theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
@@ -282,7 +323,7 @@ server <- function(input, output) {
         
         scale_color_manual(values=c("#0C2C84", "#1D91C0", "#7FCDBB"))+
         
-        ggtitle("Accumulated cases (linear)") +
+        ggtitle("Sick cases") +
         ylab("Cases") +
         xlab("Date") +
         theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
@@ -349,7 +390,7 @@ server <- function(input, output) {
         
         scale_color_manual(values=c("#0C2C84", "#1D91C0", "#7FCDBB"))+
         
-        ggtitle("Accumulated cases (linear)") +
+        ggtitle("Sick cases") +
         ylab("Cases") +
         xlab("Date") +
         theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
@@ -416,7 +457,7 @@ server <- function(input, output) {
         
         scale_color_manual(values=c("#0C2C84", "#1D91C0", "#7FCDBB"))+
         
-        ggtitle("Accumulated cases (linear)") +
+        ggtitle("Sick cases") +
         ylab("Cases") +
         xlab("Date") +
         theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
