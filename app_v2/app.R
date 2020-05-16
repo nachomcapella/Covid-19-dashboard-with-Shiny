@@ -54,6 +54,7 @@ ui <- fluidPage(navbarPage("COVID-19 Spain",
 server <- function(input, output) {
   library("ggplot2")
   library("ggpubr")
+  library("RColorBrewer")
   
   df <- as.data.frame(get_table_example())
   output$tbl <- renderTable({
@@ -167,25 +168,10 @@ server <- function(input, output) {
   ######################################################################
   # Sick
   ######################################################################
-  # plot_sick_1 <- reactive({
-  #   if (!input$check_sick_1)
-  #     return(NULL)
-  #   date_range <-
-  #     c(input$dates_sick[1], input$dates_sick[2])
-  #   dataset <- data.frame(data_national$casos_total, data_national$fecha)
-  #   colnames(dataset)[1] <- "values"
-  #   colnames(dataset)[2] <- "dates"
-  #   title <- "Sick vs date"
-  #   ylab <- "Cases (linear)"
-  #   xlab <- "Date"
-  #   ggplotly(plot_total_linear_func(date_range, dataset, title, ylab, xlab))
-  # })
   
   plot_sick_1 <- reactive({
     if (!input$check_sick_1)
       return(NULL)
-    
-
 
     fecha<- data_national$fecha[data_national$fecha >= input$dates_sick[1] &
                               data_national$fecha <= input$dates_sick[2]]
@@ -218,27 +204,28 @@ server <- function(input, output) {
     colnames(dataset)[3] <- "casos_pcr"
     colnames(dataset)[4] <- "casos_test"
     
-    
     dataset$fecha <-(as.character.Date(dataset$fecha))
 
-  
-    
     plot<-ggplotly(
       
       ggplot(data = dataset, aes(x = fecha)) +
-        geom_line(aes(y=casos_total, group=1, color="red")) +
-        geom_point(aes(y=casos_total, group=1, color = "red")) +
+        geom_line(aes(y=casos_total, group=1, color="#0C2C84")) +
+        geom_point(aes(y=casos_total, group=1, color = "#0C2C84")) +
         
-        geom_line(aes(y = casos_pcr,group=1, color="green")) + 
-        geom_point(aes(y=casos_pcr, group=1, color = "green")) +
+        geom_line(aes(y = casos_pcr,group=1, color="#1D91C0")) + 
+        geom_point(aes(y=casos_pcr, group=1, color = "#1D91C0")) +
         
-        geom_line(aes(y = casos_test,group=1, color="blue")) + 
-        geom_point(aes(y=casos_test, group=1, color = "blue")) +
+        geom_line(aes(y = casos_test,group=1, color="#7FCDBB")) + 
+        geom_point(aes(y=casos_test, group=1, color = "#7FCDBB")) +
+        
+        scale_color_manual(values=c("#0C2C84", "#1D91C0", "#7FCDBB"))+
         
         ggtitle("Accumulated cases (linear)") +
                ylab("Cases") +
                xlab("Date") +
-               theme(axis.text.x = element_text(angle = 90, hjust = 1))
+               theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+
+        theme(legend.position="none")
     )
     return(plot)
   }
@@ -247,15 +234,65 @@ server <- function(input, output) {
   plot_sick_2 <- reactive({
     if (!input$check_sick_2)
       return(NULL)
-    date_range <-
-      c(input$dates_sick[1], input$dates_sick[2])
-    dataset <- data.frame(data_national$casos_total, data_national$fecha)
-    colnames(dataset)[1] <- "values"
-    colnames(dataset)[2] <- "dates"
-    title <- "Sick vs date"
-    ylab <- "Cases (log)"
-    xlab <- "Date"
-    ggplotly(plot_total_log_func(date_range, dataset, title, ylab, xlab))
+    
+    fecha<- data_national$fecha[data_national$fecha >= input$dates_sick[1] &
+                                  data_national$fecha <= input$dates_sick[2]]
+    
+    if(input$check_sick_total){
+      casos_total<- data_national$casos_total[data_national$fecha >= input$dates_sick[1] &
+                                                data_national$fecha <= input$dates_sick[2]]
+    }else{
+      casos_total<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    if(input$check_sick_pcr){
+      casos_pcr<- data_national$casos_pcr[data_national$fecha >= input$dates_sick[1] &
+                                            data_national$fecha <= input$dates_sick[2]]
+    }else{
+      casos_pcr<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    if(input$check_sick_test){
+      casos_test<- data_national$casos_test_ac[data_national$fecha >= input$dates_sick[1] &
+                                                 data_national$fecha <= input$dates_sick[2]]
+    }else{
+      casos_test<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    dataset<-data.frame(fecha,casos_total,casos_pcr,casos_test)
+    
+    colnames(dataset)[1] <- "fecha"
+    colnames(dataset)[2] <- "casos_total"
+    colnames(dataset)[3] <- "casos_pcr"
+    colnames(dataset)[4] <- "casos_test"
+    
+    dataset$fecha <-(as.character.Date(dataset$fecha))
+    
+    plot<-ggplotly(
+      
+      ggplot(data = dataset, aes(x = fecha)) +
+        geom_line(aes(y=casos_total, group=1, color="#0C2C84")) +
+        geom_point(aes(y=casos_total, group=1, color = "#0C2C84")) +
+        
+        geom_line(aes(y = casos_pcr,group=1, color="#1D91C0")) + 
+        geom_point(aes(y=casos_pcr, group=1, color = "#1D91C0")) +
+        
+        geom_line(aes(y = casos_test,group=1, color="#7FCDBB")) + 
+        geom_point(aes(y=casos_test, group=1, color = "#7FCDBB")) +
+        
+        scale_color_manual(values=c("#0C2C84", "#1D91C0", "#7FCDBB"))+
+        
+        ggtitle("Accumulated cases (linear)") +
+        ylab("Cases") +
+        xlab("Date") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+        
+        theme(legend.position="none") + 
+        
+        scale_y_continuous(trans = 'log10') 
+        
+    )
+    return(plot)
   })
   plot_sick_3 <- reactive({
     if (!input$check_sick_3)
