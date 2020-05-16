@@ -297,15 +297,65 @@ server <- function(input, output) {
   plot_sick_3 <- reactive({
     if (!input$check_sick_3)
       return(NULL)
-    date_range <-
-      c(input$dates_sick[1], input$dates_sick[2])
-    dataset <- data.frame(data_national$casos_total, data_national$fecha)
-    colnames(dataset)[1] <- "values"
-    colnames(dataset)[2] <- "dates"
-    title <- "Sick vs date"
-    ylab <- "New cases"
-    xlab <- "Date"
-    ggplotly(plot_new_cases_abs_func(date_range, dataset, title, ylab, xlab))
+    
+    fecha<- data_national$fecha[data_national$fecha >= input$dates_sick[1] &
+                                  data_national$fecha <= input$dates_sick[2]]
+    
+    if(input$check_sick_total){
+      casos_total<- data_national$casos_total[data_national$fecha >= input$dates_sick[1] &
+                                                data_national$fecha <= input$dates_sick[2]]
+    }else{
+      casos_total<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    if(input$check_sick_pcr){
+      casos_pcr<- data_national$casos_pcr[data_national$fecha >= input$dates_sick[1] &
+                                            data_national$fecha <= input$dates_sick[2]]
+    }else{
+      casos_pcr<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    if(input$check_sick_test){
+      casos_test<- data_national$casos_test_ac[data_national$fecha >= input$dates_sick[1] &
+                                                 data_national$fecha <= input$dates_sick[2]]
+    }else{
+      casos_test<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    dataset<-data.frame(fecha,casos_total,casos_pcr,casos_test)
+    
+    colnames(dataset)[1] <- "fecha"
+    colnames(dataset)[2] <- "casos_total"
+    colnames(dataset)[3] <- "casos_pcr"
+    colnames(dataset)[4] <- "casos_test"
+    
+    dataset$fecha <-(as.character.Date(dataset$fecha))
+    dataset$casos_total<-get_daily_increment_absolute(dataset$casos_total)
+    dataset$casos_pcr<-get_daily_increment_absolute(dataset$casos_pcr)
+    dataset$casos_test<-get_daily_increment_absolute(dataset$casos_test)
+    
+    plot<-ggplotly(
+      
+      ggplot(data = dataset, aes(x = fecha)) +
+        geom_line(aes(y=casos_total, group=1, color="#0C2C84")) +
+        geom_point(aes(y=casos_total, group=1, color = "#0C2C84")) +
+        
+        geom_line(aes(y = casos_pcr,group=1, color="#1D91C0")) + 
+        geom_point(aes(y=casos_pcr, group=1, color = "#1D91C0")) +
+        
+        geom_line(aes(y = casos_test,group=1, color="#7FCDBB")) + 
+        geom_point(aes(y=casos_test, group=1, color = "#7FCDBB")) +
+        
+        scale_color_manual(values=c("#0C2C84", "#1D91C0", "#7FCDBB"))+
+        
+        ggtitle("Accumulated cases (linear)") +
+        ylab("Cases") +
+        xlab("Date") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+        
+        theme(legend.position="none")
+    )
+    return(plot)
   })
   plot_sick_4 <- reactive({
     if (!input$check_sick_4)
