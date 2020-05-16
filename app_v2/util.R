@@ -19,6 +19,9 @@ get_daily_increment_absolute <- function(cases) {
 }
 
 get_daily_increment_percentage <- function(cases) {
+  
+  
+  
   cases <- get_daily_increment_absolute(cases)
   
   number_days <- length(cases)
