@@ -76,6 +76,34 @@ ui <- fluidPage(
                    mainPanel(
                      plotlyOutput("plot_dead")
                    ))
+        ),
+        tabPanel("Hospitalized",
+                 sidebarLayout(
+                   sidebarPanel(
+                     h3("Choose the data"),
+                     checkboxInput("check_hosp_hospitalized", "Hospitalized patients", value = T),
+                     checkboxInput("check_hosp_icu", "ICU patients", value = F),
+                     checkboxInput("check_hosp_discharged", "Discharged patients", value = F),
+                     
+                     h3("Choose a visualization"),
+                     checkboxInput("check_hosp_1", "Accumulated cases (linear)", value = T),
+                     checkboxInput("check_hosp_2", "Accumulated cases (log)", value = F),
+                     checkboxInput("check_hosp_3", "New cases", value = F),
+                     checkboxInput("check_hosp_4", "New cases variation (+%)", value = F),
+                     
+                     sliderInput(
+                       "dates_hosp",
+                       h3("Choose a date range"),
+                       min = as.Date("2020-02-25", "%Y-%m-%d"),
+                       max = as.Date("2020-05-15", "%Y-%m-%d"),
+                       value = c(as.Date("2020-02-25"), as.Date("2020-05-15")),
+                       timeFormat = "%Y-%m-%d"
+                     )
+                   ),
+                   
+                   # Show a plot of the generated distribution
+                   mainPanel(plotlyOutput("plot_hosp"))
+                 )
         )
       ) #Close inner tabsetPanel
       
@@ -110,9 +138,9 @@ server <- function(input, output) {
   data_ccaa_sick_pcr <- as.data.frame(datasets[[3]])
   data_ccaa_sick_test <- as.data.frame(datasets[[4]])
   data_ccaa_dead <- as.data.frame(datasets[[5]])
-  data_ccaa_hospital <- as.data.frame(datasets[[6]])
+  data_ccaa_hospitalized <- as.data.frame(datasets[[6]])
   data_ccaa_icu <- as.data.frame(datasets[[7]])
-  data_ccaa_discharge <- as.data.frame(datasets[[8]])
+  data_ccaa_discharged <- as.data.frame(datasets[[8]])
   
   ######################################################################
   # National Sick                                                      #
@@ -158,16 +186,16 @@ server <- function(input, output) {
     plot<-ggplotly(
       
       ggplot(data = dataset, aes(x = fecha)) +
-        geom_line(aes(y=casos_total, group=1, color="#0C2C84")) +
-        geom_point(aes(y=casos_total, group=1, color = "#0C2C84")) +
+        geom_line(aes(y=casos_total, group=1, color="#005A32")) +
+        geom_point(aes(y=casos_total, group=1, color = "#005A32")) +
         
-        geom_line(aes(y = casos_pcr,group=1, color="#1D91C0")) + 
-        geom_point(aes(y=casos_pcr, group=1, color = "#1D91C0")) +
+        geom_line(aes(y = casos_pcr,group=1, color="#41AB5D")) + 
+        geom_point(aes(y=casos_pcr, group=1, color = "#41AB5D")) +
         
-        geom_line(aes(y = casos_test,group=1, color="#7FCDBB")) + 
-        geom_point(aes(y=casos_test, group=1, color = "#7FCDBB")) +
+        geom_line(aes(y = casos_test,group=1, color="#ADDD8E")) + 
+        geom_point(aes(y=casos_test, group=1, color = "#ADDD8E")) +
         
-        scale_color_manual(values=c("#0C2C84", "#1D91C0", "#7FCDBB"))+
+        scale_color_manual(values=c("#005A32", "#41AB5D", "#ADDD8E"))+
         
         ggtitle("Sick cases") +
                ylab("Cases") +
@@ -220,16 +248,16 @@ server <- function(input, output) {
     plot<-ggplotly(
       
       ggplot(data = dataset, aes(x = fecha)) +
-        geom_line(aes(y=casos_total, group=1, color="#0C2C84")) +
-        geom_point(aes(y=casos_total, group=1, color = "#0C2C84")) +
+        geom_line(aes(y=casos_total, group=1, color="#005A32")) +
+        geom_point(aes(y=casos_total, group=1, color = "#005A32")) +
         
-        geom_line(aes(y = casos_pcr,group=1, color="#1D91C0")) + 
-        geom_point(aes(y=casos_pcr, group=1, color = "#1D91C0")) +
+        geom_line(aes(y = casos_pcr,group=1, color="#41AB5D")) + 
+        geom_point(aes(y=casos_pcr, group=1, color = "#41AB5D")) +
         
-        geom_line(aes(y = casos_test,group=1, color="#7FCDBB")) + 
-        geom_point(aes(y=casos_test, group=1, color = "#7FCDBB")) +
+        geom_line(aes(y = casos_test,group=1, color="#ADDD8E")) + 
+        geom_point(aes(y=casos_test, group=1, color = "#ADDD8E")) +
         
-        scale_color_manual(values=c("#0C2C84", "#1D91C0", "#7FCDBB"))+
+        scale_color_manual(values=c("#005A32", "#41AB5D", "#ADDD8E"))+
         
         ggtitle("Sick cases") +
         ylab("Cases") +
@@ -287,16 +315,16 @@ server <- function(input, output) {
     plot<-ggplotly(
       
       ggplot(data = dataset, aes(x = fecha)) +
-        geom_line(aes(y=casos_total, group=1, color="#0C2C84")) +
-        geom_point(aes(y=casos_total, group=1, color = "#0C2C84")) +
+        geom_line(aes(y=casos_total, group=1, color="#005A32")) +
+        geom_point(aes(y=casos_total, group=1, color = "#005A32")) +
         
-        geom_line(aes(y = casos_pcr,group=1, color="#1D91C0")) + 
-        geom_point(aes(y=casos_pcr, group=1, color = "#1D91C0")) +
+        geom_line(aes(y = casos_pcr,group=1, color="#41AB5D")) + 
+        geom_point(aes(y=casos_pcr, group=1, color = "#41AB5D")) +
         
-        geom_line(aes(y = casos_test,group=1, color="#7FCDBB")) + 
-        geom_point(aes(y=casos_test, group=1, color = "#7FCDBB")) +
+        geom_line(aes(y = casos_test,group=1, color="#ADDD8E")) + 
+        geom_point(aes(y=casos_test, group=1, color = "#ADDD8E")) +
         
-        scale_color_manual(values=c("#0C2C84", "#1D91C0", "#7FCDBB"))+
+        scale_color_manual(values=c("#005A32", "#41AB5D", "#ADDD8E"))+
         
         ggtitle("Sick cases") +
         ylab("Cases") +
@@ -354,16 +382,16 @@ server <- function(input, output) {
     plot<-ggplotly(
       
       ggplot(data = dataset, aes(x = fecha)) +
-        geom_line(aes(y=casos_total, group=1, color="#0C2C84")) +
-        geom_point(aes(y=casos_total, group=1, color = "#0C2C84")) +
+        geom_line(aes(y=casos_total, group=1, color="#005A32")) +
+        geom_point(aes(y=casos_total, group=1, color = "#005A32")) +
         
-        geom_line(aes(y = casos_pcr,group=1, color="#1D91C0")) + 
-        geom_point(aes(y=casos_pcr, group=1, color = "#1D91C0")) +
+        geom_line(aes(y = casos_pcr,group=1, color="#41AB5D")) + 
+        geom_point(aes(y=casos_pcr, group=1, color = "#41AB5D")) +
         
-        geom_line(aes(y = casos_test,group=1, color="#7FCDBB")) + 
-        geom_point(aes(y=casos_test, group=1, color = "#7FCDBB")) +
+        geom_line(aes(y = casos_test,group=1, color="#ADDD8E")) + 
+        geom_point(aes(y=casos_test, group=1, color = "#ADDD8E")) +
         
-        scale_color_manual(values=c("#0C2C84", "#1D91C0", "#7FCDBB"))+
+        scale_color_manual(values=c("#005A32", "#41AB5D", "#ADDD8E"))+
         
         ggtitle("Sick cases") +
         ylab("Cases") +
@@ -564,9 +592,6 @@ server <- function(input, output) {
     return(plot)
   })
   
-  
-  
-  
   output$plot_dead = renderPlotly({
     ptlist <-
       list(plot_dead_1(),
@@ -598,6 +623,305 @@ server <- function(input, output) {
       shareY = F
     ))
   })
+  
+  
+  ######################################################################
+  # National Hospitalized                                              #
+  ######################################################################
+  
+  plot_hosp_1 <- reactive({
+    if (!input$check_hosp_1){
+      return(NULL)
+    }
+    
+    fecha<- data_national$fecha[data_national$fecha >= input$dates_hosp[1] &
+                                  data_national$fecha <= input$dates_hosp[2]]
+    
+    if(input$check_hosp_hospitalized){
+      hospitalizados<- data_national$hospitalizados[data_national$fecha >= input$dates_hosp[1] &
+                                                data_national$fecha <= input$dates_hosp[2]]
+    }else{
+      hospitalizados<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    if(input$check_hosp_icu){
+      ingresos_uci<- data_national$ingresos_uci[data_national$fecha >= input$dates_hosp[1] &
+                                            data_national$fecha <= input$dates_hosp[2]]
+    }else{
+      ingresos_uci<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    if(input$check_hosp_discharged){
+      altas<- data_national$altas[data_national$fecha >= input$dates_hosp[1] &
+                                                 data_national$fecha <= input$dates_hosp[2]]
+    }else{
+      altas<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    dataset<-data.frame(fecha,hospitalizados,ingresos_uci,altas)
+    
+    colnames(dataset)[1] <- "fecha"
+    colnames(dataset)[2] <- "hospitalizados"
+    colnames(dataset)[3] <- "ingresos_uci"
+    colnames(dataset)[4] <- "altas"
+    
+    dataset$fecha <-(as.character.Date(dataset$fecha))
+    
+    plot<-ggplotly(
+      ggplot(data = dataset, aes(x = fecha)) +
+        geom_line(aes(y=hospitalizados, group=1, color="#0C2C84")) +
+        geom_point(aes(y=hospitalizados, group=1, color = "#0C2C84")) +
+        
+        geom_line(aes(y = ingresos_uci,group=1, color="#1D91C0")) + 
+        geom_point(aes(y=ingresos_uci, group=1, color = "#1D91C0")) +
+        
+        geom_line(aes(y = altas,group=1, color="#7FCDBB")) + 
+        geom_point(aes(y=altas, group=1, color = "#7FCDBB")) +
+        
+        scale_color_manual(values=c("#0C2C84", "#1D91C0", "#7FCDBB"))+
+        
+        ggtitle("Hospitalized cases") +
+        ylab("Cases") +
+        xlab("Date") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+        
+        theme(legend.position="none")
+    )
+    return(plot)
+  }
+  )
+  
+  plot_hosp_2 <- reactive({
+    if (!input$check_hosp_2)
+      return(NULL)
+    
+    fecha<- data_national$fecha[data_national$fecha >= input$dates_hosp[1] &
+                                  data_national$fecha <= input$dates_hosp[2]]
+    
+    if(input$check_hosp_hospitalized){
+      hospitalizados<- data_national$hospitalizados[data_national$fecha >= input$dates_hosp[1] &
+                                                data_national$fecha <= input$dates_hosp[2]]
+    }else{
+      hospitalizados<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    if(input$check_hosp_icu){
+      ingresos_uci<- data_national$ingresos_uci[data_national$fecha >= input$dates_hosp[1] &
+                                            data_national$fecha <= input$dates_hosp[2]]
+    }else{
+      ingresos_uci<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    if(input$check_hosp_discharged){
+      altas<- data_national$altas[data_national$fecha >= input$dates_hosp[1] &
+                                                 data_national$fecha <= input$dates_hosp[2]]
+    }else{
+      altas<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    dataset<-data.frame(fecha,hospitalizados,ingresos_uci,altas)
+    
+    colnames(dataset)[1] <- "fecha"
+    colnames(dataset)[2] <- "hospitalizados"
+    colnames(dataset)[3] <- "ingresos_uci"
+    colnames(dataset)[4] <- "altas"
+    
+    dataset$fecha <-(as.character.Date(dataset$fecha))
+    
+    plot<-ggplotly(
+      
+      ggplot(data = dataset, aes(x = fecha)) +
+        geom_line(aes(y=hospitalizados, group=1, color="#0C2C84")) +
+        geom_point(aes(y=hospitalizados, group=1, color = "#0C2C84")) +
+        
+        geom_line(aes(y = ingresos_uci,group=1, color="#1D91C0")) + 
+        geom_point(aes(y=ingresos_uci, group=1, color = "#1D91C0")) +
+        
+        geom_line(aes(y = altas,group=1, color="#7FCDBB")) + 
+        geom_point(aes(y=altas, group=1, color = "#7FCDBB")) +
+        
+        scale_color_manual(values=c("#0C2C84", "#1D91C0", "#7FCDBB"))+
+        
+        ggtitle("Hospitalized cases") +
+        ylab("Cases") +
+        xlab("Date") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+        
+        theme(legend.position="none") + 
+        
+        scale_y_continuous(trans = 'log10') 
+      
+    )
+    return(plot)
+  })
+  
+  plot_hosp_3 <- reactive({
+    if (!input$check_hosp_3)
+      return(NULL)
+    
+    fecha<- data_national$fecha[data_national$fecha >= input$dates_hosp[1] &
+                                  data_national$fecha <= input$dates_hosp[2]]
+    
+    if(input$check_hosp_hospitalized){
+      hospitalizados<- data_national$hospitalizados[data_national$fecha >= input$dates_hosp[1] &
+                                                data_national$fecha <= input$dates_hosp[2]]
+      hospitalizados<-get_daily_increment_absolute(hospitalizados)
+    }else{
+      hospitalizados<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    if(input$check_hosp_icu){
+      ingresos_uci<- data_national$ingresos_uci[data_national$fecha >= input$dates_hosp[1] &
+                                            data_national$fecha <= input$dates_hosp[2]]
+      ingresos_uci<-get_daily_increment_absolute(ingresos_uci)
+    }else{
+      ingresos_uci<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    if(input$check_hosp_discharged){
+      altas<- data_national$altas[data_national$fecha >= input$dates_hosp[1] &
+                                                 data_national$fecha <= input$dates_hosp[2]]
+      altas<-get_daily_increment_absolute(altas)
+    }else{
+      altas<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    dataset<-data.frame(fecha,hospitalizados,ingresos_uci,altas)
+    
+    colnames(dataset)[1] <- "fecha"
+    colnames(dataset)[2] <- "hospitalizados"
+    colnames(dataset)[3] <- "ingresos_uci"
+    colnames(dataset)[4] <- "altas"
+    
+    dataset$fecha <-(as.character.Date(dataset$fecha))
+    
+    plot<-ggplotly(
+      
+      ggplot(data = dataset, aes(x = fecha)) +
+        geom_line(aes(y=hospitalizados, group=1, color="#0C2C84")) +
+        geom_point(aes(y=hospitalizados, group=1, color = "#0C2C84")) +
+        
+        geom_line(aes(y = ingresos_uci,group=1, color="#1D91C0")) + 
+        geom_point(aes(y=ingresos_uci, group=1, color = "#1D91C0")) +
+        
+        geom_line(aes(y = altas,group=1, color="#7FCDBB")) + 
+        geom_point(aes(y=altas, group=1, color = "#7FCDBB")) +
+        
+        scale_color_manual(values=c("#0C2C84", "#1D91C0", "#7FCDBB"))+
+        
+        ggtitle("Hospitalized cases") +
+        ylab("Cases") +
+        xlab("Date") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+        
+        theme(legend.position="none")
+    )
+    return(plot)
+  })
+  
+  plot_hosp_4 <- reactive({
+    if (!input$check_hosp_4)
+      return(NULL)
+    
+    fecha<- data_national$fecha[data_national$fecha >= input$dates_hosp[1] &
+                                  data_national$fecha <= input$dates_hosp[2]]
+    
+    if(input$check_hosp_hospitalized){
+      hospitalizados<- data_national$hospitalizados[data_national$fecha >= input$dates_hosp[1] &
+                                                data_national$fecha <= input$dates_hosp[2]]
+      hospitalizados<-get_daily_increment_percentage(hospitalizados)
+    }else{
+      hospitalizados<-as.numeric(rep(NA,length(fecha)))
+      
+    }
+    
+    if(input$check_hosp_icu){
+      ingresos_uci<- data_national$ingresos_uci[data_national$fecha >= input$dates_hosp[1] &
+                                            data_national$fecha <= input$dates_hosp[2]]
+      ingresos_uci<-get_daily_increment_percentage(ingresos_uci)
+      
+    }else{
+      ingresos_uci<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    if(input$check_hosp_discharged){
+      altas<- data_national$altas[data_national$fecha >= input$dates_hosp[1] &
+                                                 data_national$fecha <= input$dates_hosp[2]]
+      altas<-get_daily_increment_percentage(altas)
+      
+    }else{
+      altas<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    dataset<-data.frame(fecha,hospitalizados,ingresos_uci,altas)
+    
+    colnames(dataset)[1] <- "fecha"
+    colnames(dataset)[2] <- "hospitalizados"
+    colnames(dataset)[3] <- "ingresos_uci"
+    colnames(dataset)[4] <- "altas"
+    
+    dataset$fecha <-(as.character.Date(dataset$fecha))
+    
+    plot<-ggplotly(
+      
+      ggplot(data = dataset, aes(x = fecha)) +
+        geom_line(aes(y=hospitalizados, group=1, color="#0C2C84")) +
+        geom_point(aes(y=hospitalizados, group=1, color = "#0C2C84")) +
+        
+        geom_line(aes(y = ingresos_uci,group=1, color="#1D91C0")) + 
+        geom_point(aes(y=ingresos_uci, group=1, color = "#1D91C0")) +
+        
+        geom_line(aes(y = altas,group=1, color="#7FCDBB")) + 
+        geom_point(aes(y=altas, group=1, color = "#7FCDBB")) +
+        
+        scale_color_manual(values=c("#0C2C84", "#1D91C0", "#7FCDBB"))+
+        
+        ggtitle("Hospitalized cases") +
+        ylab("Cases") +
+        xlab("Date") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+        
+        theme(legend.position="none") +
+        
+        geom_hline(yintercept = 0, color = "#88419D")
+    )
+    return(plot)
+  })
+  
+  output$plot_hosp = renderPlotly({
+    ptlist <-
+      list(plot_hosp_1(),
+           plot_hosp_2(),
+           plot_hosp_3(),
+           plot_hosp_4()
+           )
+    if (length(ptlist) == 1) {
+      wtlist = c(100)
+    }
+    if (length(ptlist) == 2) {
+      wtlist = c(50, 50)
+    }
+    if (length(ptlist) == 3) {
+      wtlist = c(33.33, 33.33, 33.33)
+    }
+    if (length(ptlist) == 4) {
+      wtlist = c(25, 25, 25, 25)
+    }
+    # remove the null plots from ptlist and wtlist
+    to_delete <- !sapply(ptlist, is.null)
+    ptlist <- ptlist[to_delete]
+    #wtlist <- wtlist[to_delete]
+    if (length(ptlist) == 0)
+      return(NULL)
+    return(subplot(
+      ptlist,
+      nrows = length(ptlist),
+      shareX = T,
+      shareY = F
+    ))
+  })
+  
+  
   
 }
 
