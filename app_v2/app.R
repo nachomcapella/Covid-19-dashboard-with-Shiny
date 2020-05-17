@@ -55,9 +55,9 @@ ui <- fluidPage(
                    sidebarPanel(
                      h3("Choose a visualization"),
                      checkboxInput(
-                       "check_dead_1","Total cases (linear)", value= T),
+                       "check_dead_1","Accumulated cases (linear)", value= T),
                      checkboxInput(
-                       "check_dead_2","Total cases (log)", value= F),
+                       "check_dead_2","Accumulated cases (log)", value= F),
                      checkboxInput(
                        "check_dead_3","New cases", value= F),
                      checkboxInput(
@@ -114,100 +114,8 @@ server <- function(input, output) {
   data_ccaa_icu <- as.data.frame(datasets[[7]])
   data_ccaa_discharge <- as.data.frame(datasets[[8]])
   
-  #Creating the plots:
-  # plot_total_linear_func <-
-  #   function(date_range, dataset, title, ylab, xlab) {
-  #     dates <-
-  #       dataset$dates[dataset$dates >= date_range[1] &
-  #                       dataset$dates <= date_range[2]]
-  #     cases <-
-  #       dataset$values[dataset$dates >= date_range[1] &
-  #                        dataset$dates <= date_range[2]]
-  #     date <- as.character.Date(dates)
-  #     df <- data.frame(cases, date)
-  #     plot_total <-
-  #       ggplot(data = df, aes(x = date, y = cases, group = 1)) + geom_line(color = "red") +
-  #       geom_point() +
-  #       ggtitle(title) +
-  #       ylab(ylab) +
-  #       xlab(xlab) +
-  #       theme(axis.text.x = element_text(angle = 90, hjust = 1))
-  #     return(plot_total)
-  #   }
-  
-  
-  
-  plot_total_log_func <-
-    function(date_range, dataset, title, ylab, xlab) {
-      dates <-
-        dataset$dates[dataset$dates >= date_range[1] &
-                        dataset$dates <= date_range[2]]
-      cases <-
-        dataset$values[dataset$dates >= date_range[1] &
-                         dataset$dates <= date_range[2]]
-      date <- as.character.Date(dates)
-      df <- data.frame(cases, date)
-      plot_total <-
-        ggplot(data = df, aes(x = date, y = cases, group = 1)) +
-        geom_line(color = "red") +
-        geom_point() +
-        scale_y_continuous(trans = 'log10') +
-        ggtitle(title) +
-        ylab(ylab) +
-        xlab(xlab) +
-        theme(axis.text.x = element_text(angle = 90, hjust = 1))
-      return(plot_total)
-    }
-  
-  plot_new_cases_abs_func <-
-    function(date_range, dataset, title, ylab, xlab) {
-      dates <-
-        dataset$dates[dataset$dates >= date_range[1] &
-                        dataset$dates <= date_range[2]]
-      cases <-
-        dataset$values[dataset$dates >= date_range[1] &
-                         dataset$dates <= date_range[2]]
-      cases <- get_daily_increment_absolute(cases)
-      date <- as.character.Date(dates)
-      df <- data.frame(cases, date)
-      plot_new_cases_abs <-
-        ggplot(data = df,
-               aes(x = date, y = cases, group = 1)) +
-        geom_line(color = "green") +
-        geom_point() +
-        ggtitle(title) +
-        ylab(ylab) +
-        xlab(xlab) +
-        theme(axis.text.x = element_text(angle = 90, hjust = 1))
-      return(plot_new_cases_abs)
-    }
-  
-  plot_new_cases_perc_func <-
-    function(date_range, dataset, title, ylab, xlab) {
-      dates <-
-        dataset$dates[dataset$dates >= date_range[1] &
-                        dataset$dates <= date_range[2]]
-      cases <-
-        dataset$values[dataset$dates >= date_range[1] &
-                         dataset$dates <= date_range[2]]
-      cases <- get_daily_increment_percentage(cases)
-      date <- as.character.Date(dates)
-      df <- data.frame(cases, date)
-      plot_new_cases_perc <-
-        ggplot(data = df,
-               aes(x = date, y = cases, group = 1)) +
-        geom_line(color = "blue") +
-        geom_point() +
-        geom_hline(yintercept = 0, color = "red") +
-        ggtitle(title) +
-        ylab(ylab) +
-        xlab(xlab) +
-        theme(axis.text.x = element_text(angle = 90, hjust = 1))
-      return(plot_new_cases_perc)
-    }
-  
   ######################################################################
-  # Sick
+  # National Sick                                                      #
   ######################################################################
   
   plot_sick_1 <- reactive({
@@ -464,7 +372,7 @@ server <- function(input, output) {
         
         theme(legend.position="none") +
       
-        geom_hline(yintercept = 0, color = "#E41A1C")
+        geom_hline(yintercept = 0, color = "#88419D")
     )
     return(plot)
   })
@@ -501,10 +409,199 @@ server <- function(input, output) {
     ))
   })
   
+  ######################################################################
+  # National Dead                                                      #
+  ######################################################################
+  
+  plot_dead_1 <- reactive({
+    if (!input$check_dead_1)
+      return(NULL)
+    
+    fecha<- data_national$fecha[data_national$fecha >= input$dates_dead[1] &
+                                  data_national$fecha <= input$dates_dead[2]]
+    
+    fallecimientos<- data_national$fallecimientos[data_national$fecha >= input$dates_dead[1] &
+                                                data_national$fecha <= input$dates_dead[2]]
+    
+    dataset<-data.frame(fecha,fallecimientos)
+    
+    colnames(dataset)[1] <- "fecha"
+    colnames(dataset)[2] <- "fallecimientos"
+    
+    dataset$fecha <-(as.character.Date(dataset$fecha))
+    
+    plot<-ggplotly(
+      
+      ggplot(data = dataset, aes(x = fecha)) +
+        geom_line(aes(y=fallecimientos, group=1, color="#E41A1C")) +
+        geom_point(aes(y=fallecimientos, group=1, color = "#E41A1C")) +
+        
+        scale_color_manual(values=c("#E41A1C"))+
+        
+        ggtitle("dead cases") +
+        ylab("Cases") +
+        xlab("Date") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+        
+        theme(legend.position="none")
+    )
+    return(plot)
+  }
+  )
+  
+  plot_dead_2 <- reactive({
+    if (!input$check_dead_2)
+      return(NULL)
+    
+    fecha<- data_national$fecha[data_national$fecha >= input$dates_dead[1] &
+                                  data_national$fecha <= input$dates_dead[2]]
+    
+      fallecimientos<- data_national$fallecimientos[data_national$fecha >= input$dates_dead[1] &
+                                                data_national$fecha <= input$dates_dead[2]]
+    
+    
+    dataset<-data.frame(fecha,fallecimientos)
+    
+    colnames(dataset)[1] <- "fecha"
+    colnames(dataset)[2] <- "fallecimientos"
+    
+    dataset$fecha <-(as.character.Date(dataset$fecha))
+    
+    plot<-ggplotly(
+      
+      ggplot(data = dataset, aes(x = fecha)) +
+        geom_line(aes(y=fallecimientos, group=1, color="#E41A1C")) +
+        geom_point(aes(y=fallecimientos, group=1, color = "#E41A1C")) +
+        
+        scale_color_manual(values=c("#E41A1C"))+
+        
+        ggtitle("dead cases") +
+        ylab("Cases") +
+        xlab("Date") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+        
+        theme(legend.position="none") + 
+        
+        scale_y_continuous(trans = 'log10') 
+      
+    )
+    return(plot)
+  })
+  
+  plot_dead_3 <- reactive({
+    if (!input$check_dead_3)
+      return(NULL)
+    
+    fecha<- data_national$fecha[data_national$fecha >= input$dates_dead[1] &
+                                  data_national$fecha <= input$dates_dead[2]]
+    
+      fallecimientos<- data_national$fallecimientos[data_national$fecha >= input$dates_dead[1] &
+                                                data_national$fecha <= input$dates_dead[2]]
+      fallecimientos<-get_daily_increment_absolute(fallecimientos)
+    
+    dataset<-data.frame(fecha,fallecimientos)
+    
+    colnames(dataset)[1] <- "fecha"
+    colnames(dataset)[2] <- "fallecimientos"
+    
+    dataset$fecha <-(as.character.Date(dataset$fecha))
+    
+    plot<-ggplotly(
+      
+      ggplot(data = dataset, aes(x = fecha)) +
+        geom_line(aes(y=fallecimientos, group=1, color="#E41A1C")) +
+        geom_point(aes(y=fallecimientos, group=1, color = "#E41A1C")) +
+        
+        scale_color_manual(values=c("#E41A1C"))+
+        
+        ggtitle("dead cases") +
+        ylab("Cases") +
+        xlab("Date") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+        
+        theme(legend.position="none")
+    )
+    return(plot)
+  })
+  
+  plot_dead_4 <- reactive({
+    if (!input$check_dead_4)
+      return(NULL)
+    
+    fecha<- data_national$fecha[data_national$fecha >= input$dates_dead[1] &
+                                  data_national$fecha <= input$dates_dead[2]]
+    
+      fallecimientos<- data_national$fallecimientos[data_national$fecha >= input$dates_dead[1] &
+                                                data_national$fecha <= input$dates_dead[2]]
+      fallecimientos<-get_daily_increment_percentage(fallecimientos)
+   
+    
+    dataset<-data.frame(fecha,fallecimientos)
+    
+    colnames(dataset)[1] <- "fecha"
+    colnames(dataset)[2] <- "fallecimientos"
+    
+    dataset$fecha <-(as.character.Date(dataset$fecha))
+    
+    plot<-ggplotly(
+      
+      ggplot(data = dataset, aes(x = fecha)) +
+        geom_line(aes(y=fallecimientos, group=1, color="#E41A1C")) +
+        geom_point(aes(y=fallecimientos, group=1, color = "#E41A1C")) +
+        
+        
+        scale_color_manual(values=c("#E41A1C"))+
+        
+        ggtitle("dead cases") +
+        ylab("Cases") +
+        xlab("Date") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+        
+        theme(legend.position="none") +
+        
+        geom_hline(yintercept = 0, color = "#88419D")
+    )
+    return(plot)
+  })
   
   
+  
+  
+  output$plot_dead = renderPlotly({
+    ptlist <-
+      list(plot_dead_1(),
+           plot_dead_2(),
+           plot_dead_3(),
+           plot_dead_4())
+    if (length(ptlist) == 1) {
+      wtlist = c(100)
+    }
+    if (length(ptlist) == 2) {
+      wtlist = c(50, 50)
+    }
+    if (length(ptlist) == 3) {
+      wtlist = c(33.33, 33.33, 33.33)
+    }
+    if (length(ptlist) == 4) {
+      wtlist = c(25, 25, 25, 25)
+    }
+    # remove the null plots from ptlist and wtlist
+    to_delete <- !sapply(ptlist, is.null)
+    ptlist <- ptlist[to_delete]
+    #wtlist <- wtlist[to_delete]
+    if (length(ptlist) == 0)
+      return(NULL)
+    return(subplot(
+      ptlist,
+      nrows = length(ptlist),
+      shareX = T,
+      shareY = F
+    ))
+  })
   
 }
 
 # Run the application
 shinyApp(ui = ui, server = server)
+
+
