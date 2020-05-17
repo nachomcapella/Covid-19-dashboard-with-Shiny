@@ -147,8 +147,8 @@ get_data_ccaa_sick_test <- function(fecha){
     )
   colnames(data) <- names
   
-  x <- rep(0, ncol(data))
-  data <- rbind(x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x, data)
+  # x <- rep(0, ncol(data))
+  # data <- rbind(x,x,x,xx,x,x,x,data)
   data <- as.data.frame(cbind(fecha, data))
   
   data <- as.data.frame(data)
@@ -308,8 +308,8 @@ get_data_ccaa_discharge <- function(fecha){
   
   data <- as.data.frame(data)
   
-  x <- rep(0, ncol(data))
-  data <- rbind(x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x, data)
+  # x <- rep(0, ncol(data))
+  # data <- rbind(x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x, data)
   data <- as.data.frame(cbind(fecha, data))
   
   data <- as.data.frame(cbind(fecha, data))

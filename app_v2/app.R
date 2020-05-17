@@ -40,8 +40,8 @@ ui <- fluidPage(
                        "dates_sick",
                        h3("Choose a date range"),
                        min = as.Date("2020-02-25", "%Y-%m-%d"),
-                       max = as.Date("2020-05-15", "%Y-%m-%d"),
-                       value = c(as.Date("2020-02-25"), as.Date("2020-05-15")),
+                       max = as.Date("2020-05-17", "%Y-%m-%d"),
+                       value = c(as.Date("2020-02-25"), as.Date("2020-05-17")),
                        timeFormat = "%Y-%m-%d"
                      )
                    ),
@@ -66,8 +66,8 @@ ui <- fluidPage(
                        "dates_dead",
                        h3("Choose a date range"),
                        min = as.Date("2020-02-25", "%Y-%m-%d"),
-                       max = as.Date("2020-05-15", "%Y-%m-%d"),
-                       value = c(as.Date("2020-02-25"), as.Date("2020-05-15")),
+                       max = as.Date("2020-05-17", "%Y-%m-%d"),
+                       value = c(as.Date("2020-02-25"), as.Date("2020-05-17")),
                        timeFormat = "%Y-%m-%d"
                      )
                    ),
@@ -95,8 +95,8 @@ ui <- fluidPage(
                        "dates_hosp",
                        h3("Choose a date range"),
                        min = as.Date("2020-02-25", "%Y-%m-%d"),
-                       max = as.Date("2020-05-15", "%Y-%m-%d"),
-                       value = c(as.Date("2020-02-25"), as.Date("2020-05-15")),
+                       max = as.Date("2020-05-17", "%Y-%m-%d"),
+                       value = c(as.Date("2020-02-25"), as.Date("2020-05-17")),
                        timeFormat = "%Y-%m-%d"
                      )
                    ),
