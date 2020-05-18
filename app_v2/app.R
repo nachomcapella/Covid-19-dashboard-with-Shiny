@@ -1051,14 +1051,69 @@ server <- function(input, output) {
   plot_reg_sick_2 <- reactive({
     if (!input$check_reg_sick_2)
       return(NULL)
-    date_range <- c(input$dates_reg[1], input$dates_reg[2])
-    dataset <- data.frame(region_data(), data$fecha)
-    colnames(dataset)[1] <- "values"
-    colnames(dataset)[2] <- "dates"
-    title <- "Sick vs date"
-    ylab <- "Cases (log)"
-    xlab <- "Date"
-    ggplotly(plot_total_log_func(date_range, dataset, title, ylab, xlab))
+    
+    fecha<- data_national$fecha[data_national$fecha >= input$dates_reg_sick[1] &
+                                  data_national$fecha <= input$dates_reg_sick[2]]
+    
+    if(input$check_reg_sick_total){
+      data<- region_data_sick_total()
+      casos_total<- data[data_national$fecha >= input$dates_reg_sick[1] &
+                           data_national$fecha <= input$dates_reg_sick[2]]
+    }else{
+      casos_total<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    if(input$check_reg_sick_pcr){
+      data<- region_data_sick_pcr()
+      casos_pcr<- data[data_national$fecha >= input$dates_reg_sick[1] &
+                         data_national$fecha <= input$dates_reg_sick[2]]
+    }else{
+      casos_pcr<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    if(input$check_reg_sick_test){
+      data<- region_data_sick_test()
+      casos_test<- data[data_national$fecha >= input$dates_reg_sick[1] &
+                          data_national$fecha <= input$dates_reg_sick[2]]
+    }else{
+      casos_test<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    dataset<-data.frame(fecha,casos_total,casos_pcr,casos_test)
+    
+    colnames(dataset)[1] <- "fecha"
+    colnames(dataset)[2] <- "casos_total"
+    colnames(dataset)[3] <- "casos_pcr"
+    colnames(dataset)[4] <- "casos_test"
+    
+    dataset$fecha <-(as.character.Date(dataset$fecha))
+    
+    plot<-ggplotly(
+      
+      ggplot(data = dataset, aes(x = fecha)) +
+        geom_line(aes(y=casos_total, group=1, color="#005A32")) +
+        geom_point(aes(y=casos_total, group=1, color = "#005A32")) +
+        
+        geom_line(aes(y = casos_pcr,group=1, color="#41AB5D")) + 
+        geom_point(aes(y=casos_pcr, group=1, color = "#41AB5D")) +
+        
+        geom_line(aes(y = casos_test,group=1, color="#ADDD8E")) + 
+        geom_point(aes(y=casos_test, group=1, color = "#ADDD8E")) +
+        
+        scale_color_manual(values=c("#005A32", "#41AB5D", "#ADDD8E"))+
+        
+        ggtitle("Sick cases") +
+        ylab("Cases") +
+        xlab("Date") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+        
+        theme(legend.position="none") + 
+        
+        scale_y_continuous(trans = 'log10') 
+      
+    )
+    return(plot)
+    
   })
   plot_reg_sick_3 <- reactive({
     if (!input$check_reg_sick_3)
