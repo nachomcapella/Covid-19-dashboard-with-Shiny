@@ -109,15 +109,65 @@ ui <- fluidPage(
       
     ),
     tabPanel("Regional Level",
-             fluidRow(
-               column(width = 12,
-                      h1("HI!")
+             tabsetPanel(
+               tabPanel("Sick",
+                        sidebarLayout(
+                          sidebarPanel(
+                            
+                            selectInput("select_reg_sick", h3("Select CC.AA."), 
+                                        choices = list("Andalucia" = "andalucia",
+                                                       "Aragon" = "aragon",
+                                                       "Asturias" = "asturias",
+                                                       "Baleares" = "baleares",
+                                                       "Canarias" = "canarias",
+                                                       "Cantabria" = "cantabria",
+                                                       "Castilla-La Mancha" = "castillalamancha",
+                                                       "Castilla y Leon" = "castillayleon",
+                                                       "Cataluna" = "cataluna",
+                                                       "Ceuta" = "ceuta",
+                                                       "C. Valenciana" = "cvalenciana",
+                                                       "C. de Madrid" = "cdemadrid",
+                                                       "Extremadura" = "extremadura",
+                                                       "Galicia" = "galicia",
+                                                       "Melilla" = "melilla",
+                                                       "Murcia" = "murcia",
+                                                       "Navarra" = "navarra",
+                                                       "Pais Vasco" = "paisvasco",
+                                                       "La Rioja" = "larioja"),
+                                        selected = "andalucia"),
+                            
+                            h3("Choose the data"),
+                            checkboxInput("check_reg_sick_total", "Total sick cases", value = T),
+                            checkboxInput("check_reg_sick_pcr", "PCR", value = F),
+                            checkboxInput("check_reg_sick_test", "Antibody test", value = F),
+                            
+                            
+                            h3("Choose a visualization"),
+                            checkboxInput(
+                              "check_reg_sick_1","Accumulated cases (linear)", value= T),
+                            checkboxInput(
+                              "check_reg_sick_2","Accumulated cases (log)", value= F),
+                            checkboxInput(
+                              "check_reg_sick_3","New cases", value= F),
+                            checkboxInput(
+                              "check_reg_sick_4","New cases variation (+%)", value= F),
+                            
+                            sliderInput(
+                              "dates_reg_sick",
+                              h3("Choose a date range"),
+                              min = as.Date("2020-02-25", "%Y-%m-%d"),
+                              max = as.Date("2020-05-17", "%Y-%m-%d"),
+                              value = c(as.Date("2020-02-25"), as.Date("2020-05-17")),
+                              timeFormat = "%Y-%m-%d")),
+                          
+                          # Show a plot of the generated distribution
+                          mainPanel(
+                            plotlyOutput("plot_reg_sick")
+                          )))
+             )
                )
              )
     )
-  ) #Close outer tabsetPanel
-) #Close FluidPage
-
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
@@ -134,7 +184,7 @@ server <- function(input, output) {
   
   datasets <- get_data()
   data_national <- as.data.frame(datasets[[1]])
-  data_ccaa_sick <- as.data.frame(datasets[[2]])
+  data_ccaa_sick_total <- as.data.frame(datasets[[2]])
   data_ccaa_sick_pcr <- as.data.frame(datasets[[3]])
   data_ccaa_sick_test <- as.data.frame(datasets[[4]])
   data_ccaa_dead <- as.data.frame(datasets[[5]])
@@ -921,8 +971,148 @@ server <- function(input, output) {
     ))
   })
   
+  ######################################################################
+  # CC.AA. Sick                                                        #
+  ######################################################################
+  region_data_sick_total <- reactive({
+    return(data_ccaa_sick_total[, input$select_reg_sick])
+  })
+  region_data_sick_pcr <- reactive({
+    return(data_ccaa_sick_pcr[, input$select_reg_sick])
+  })
+  region_data_sick_test <- reactive({
+    return(data_ccaa_sick_test[, input$select_reg_sick])
+  })
   
+  plot_reg_sick_1 <- reactive({
+    if (!input$check_reg_sick_1)
+      return(NULL)
+
+    fecha<- data_national$fecha[data_national$fecha >= input$dates_reg_sick[1] &
+                                  data_national$fecha <= input$dates_reg_sick[2]]
+    
+    if(input$check_reg_sick_total){
+      data<- region_data_sick_total()
+      casos_total<- data[data_national$fecha >= input$dates_reg_sick[1] &
+                                                data_national$fecha <= input$dates_reg_sick[2]]
+    }else{
+      casos_total<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    if(input$check_reg_sick_pcr){
+      data<- region_data_sick_pcr()
+      casos_pcr<- data[data_national$fecha >= input$dates_reg_sick[1] &
+                                            data_national$fecha <= input$dates_reg_sick[2]]
+    }else{
+      casos_pcr<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    if(input$check_reg_sick_test){
+      data<- region_data_sick_test()
+      casos_test<- data[data_national$fecha >= input$dates_reg_sick[1] &
+                                                 data_national$fecha <= input$dates_reg_sick[2]]
+    }else{
+      casos_test<-as.numeric(rep(NA,length(fecha)))
+    }
+    
+    dataset<-data.frame(fecha,casos_total,casos_pcr,casos_test)
+    
+    colnames(dataset)[1] <- "fecha"
+    colnames(dataset)[2] <- "casos_total"
+    colnames(dataset)[3] <- "casos_pcr"
+    colnames(dataset)[4] <- "casos_test"
+    
+    dataset$fecha <-(as.character.Date(dataset$fecha))
+    
+    plot<-ggplotly(
+      
+      ggplot(data = dataset, aes(x = fecha)) +
+        geom_line(aes(y=casos_total, group=1, color="#005A32")) +
+        geom_point(aes(y=casos_total, group=1, color = "#005A32")) +
+        
+        geom_line(aes(y = casos_pcr,group=1, color="#41AB5D")) + 
+        geom_point(aes(y=casos_pcr, group=1, color = "#41AB5D")) +
+        
+        geom_line(aes(y = casos_test,group=1, color="#ADDD8E")) + 
+        geom_point(aes(y=casos_test, group=1, color = "#ADDD8E")) +
+        
+        scale_color_manual(values=c("#005A32", "#41AB5D", "#ADDD8E"))+
+        
+        ggtitle("Sick cases") +
+        ylab("Cases") +
+        xlab("Date") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+        
+        theme(legend.position="none")
+    )
+    return(plot)
+  })
   
+  plot_reg_sick_2 <- reactive({
+    if (!input$check_reg_sick_2)
+      return(NULL)
+    date_range <- c(input$dates_reg[1], input$dates_reg[2])
+    dataset <- data.frame(region_data(), data$fecha)
+    colnames(dataset)[1] <- "values"
+    colnames(dataset)[2] <- "dates"
+    title <- "Sick vs date"
+    ylab <- "Cases (log)"
+    xlab <- "Date"
+    ggplotly(plot_total_log_func(date_range, dataset, title, ylab, xlab))
+  })
+  plot_reg_sick_3 <- reactive({
+    if (!input$check_reg_sick_3)
+      return(NULL)
+    date_range <- c(input$dates_reg[1], input$dates_reg[2])
+    dataset <- data.frame(region_data(), data$fecha)
+    colnames(dataset)[1] <- "values"
+    colnames(dataset)[2] <- "dates"
+    title <- "Sick vs date"
+    ylab <- "New cases"
+    xlab <- "Date"
+    ggplotly(plot_new_cases_abs_func(date_range, dataset, title, ylab, xlab))
+  })
+  plot_reg_sick_4 <- reactive({
+    if (!input$check_reg_sick_4)
+      return(NULL)
+    date_range <- c(input$dates_reg[1], input$dates_reg[2])
+    dataset <- data.frame(region_data(), data$fecha)
+    colnames(dataset)[1] <- "values"
+    colnames(dataset)[2] <- "dates"
+    title <- "Sick vs date"
+    ylab <- "New cases variation (+%)"
+    xlab <- "Date"
+    ggplotly(plot_new_cases_perc_func(date_range, dataset, title, ylab, xlab))
+  })
+  
+  output$plot_reg_sick = renderPlotly({
+    ptlist <-
+      list(plot_reg_sick_1(), plot_reg_sick_2(), plot_reg_sick_3(), plot_reg_sick_4())
+    if (length(ptlist) == 1) {
+      wtlist = c(100)
+    }
+    if (length(ptlist) == 2) {
+      wtlist = c(50, 50)
+    }
+    if (length(ptlist) == 3) {
+      wtlist = c(33.33, 33.33, 33.33)
+    }
+    if (length(ptlist) == 4) {
+      wtlist = c(25, 25, 25, 25)
+    }
+    # remove the null plots from ptlist and wtlist
+    to_delete <- !sapply(ptlist, is.null)
+    ptlist <- ptlist[to_delete]
+    #wtlist <- wtlist[to_delete]
+    if (length(ptlist) == 0)
+      return(NULL)
+    return(subplot(
+      ptlist,
+      nrows = length(ptlist),
+      shareX = T,
+      shareY = F
+    ))
+  })
 }
 
 # Run the application
